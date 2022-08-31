@@ -1,4 +1,4 @@
-module github.com/SacredStar/Encryption.go
+module GostCrypto
 
 go 1.18
 
