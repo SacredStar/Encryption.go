@@ -1,7 +1,7 @@
 package main
 
 import (
-	"EncryptionPlugin/GostCrypto"
+	"GostCrypto/GostCrypto"
 	"fmt"
 	"golang.org/x/sys/windows"
 )
@@ -17,16 +17,16 @@ CryptAcquireContext(
 */
 
 func main() {
-	var hProvHandle, hHash windows.Handle
+	var hProvHandle windows.Handle
 	if err := windows.CryptAcquireContext(&hProvHandle, nil, nil, 80, windows.CRYPT_VERIFYCONTEXT); err != nil {
 		fmt.Println(err.Error())
 	}
-	GostCrypto.CryptCreateHash(hProvHandle, GostCrypto.CALG_GR3411_2012_256, 0, &hHash)
 	str := []byte("hello")
-	GostCrypto.CryptHashData(hHash, &str[0], 5)
-	//hash := make([]byte, 256)
-	//var DataLen uint32
-	GostCrypto.CryptGetHashParam(hHash, GostCrypto.HP_HASHVAL)
+	data, err := GostCrypto.CreateHashFromData(hProvHandle, GostCrypto.CALG_GR3411_2012_256, &str[0], 5)
+	if err != nil {
+		fmt.Println("error")
+	}
+	fmt.Printf("%X", data)
 	//fmt.Printf("%s", hash)
 	/*
 		GostCrypto.GetProviderParam(hProvhandle)

@@ -1,4 +1,4 @@
-module EncryptionPlugin
+module GostCrypto
 
 go 1.18
 

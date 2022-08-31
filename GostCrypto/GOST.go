@@ -7,6 +7,21 @@ import (
 	"unsafe"
 )
 
+func CreateHashFromData(hProvider windows.Handle, algID AlgorythmID, pbdata *byte, lendata uint32) (hashValue []byte, err error) {
+	var hHash windows.Handle
+	if err := CryptCreateHash(hProvider, algID, 0, &hHash); err != nil {
+		return nil, err
+	}
+	if err := CryptHashData(hHash, pbdata, lendata); err != nil {
+		return nil, err
+	}
+	hVal, err := CryptGetHashParam(hHash, HP_HASHVAL)
+	if err != nil {
+		return nil, err
+	}
+	return hVal, nil
+}
+
 // CryptCreateHash
 //BOOL CryptCreateHash(
 //[in]  HCRYPTPROV hProv,
@@ -14,10 +29,10 @@ import (
 //[in]  HCRYPTKEY  hKey =0 TODO: check this for HMAC/MAC,
 //[in]  DWORD      dwFlags,
 //[out] HCRYPTHASH *phHash
-func CryptCreateHash(handleProvider windows.Handle, algID AlgorythmID, hKey int, hashHandle *windows.Handle) error {
+func CryptCreateHash(hProvider windows.Handle, algID AlgorythmID, hKey int, hashHandle *windows.Handle) error {
 	dwFlags := 0
 	if r1, _, err := procCryptCreateHash.Call(
-		uintptr(handleProvider),
+		uintptr(hProvider),
 		uintptr(algID),
 		uintptr(hKey),
 		uintptr(dwFlags),
@@ -51,7 +66,7 @@ func CryptHashData(hHash windows.Handle, pbdata *byte, dwDataLen uint32) error {
 //[out]     BYTE       *pbData,
 //[in, out] DWORD(uint32)      *pdwDataLen,
 //[in]      DWORD      dwFlags
-func CryptGetHashParam(hHash windows.Handle, dwParam uint32) (hValue []byte, err error) {
+func CryptGetHashParam(hHash windows.Handle, dwParam uint32) (hashValue []byte, err error) {
 	var pdwDatalen uint32
 	//pbData1 := make([]byte, 256)
 	dwFlags := 0
@@ -115,7 +130,7 @@ func GetProviderParam(handleProvider windows.Handle) (param []byte, err error) {
 //[out]     LPWSTR szProvName,
 //[in, out] DWORD  *pcbProvName
 //);
-func EnumProviders() (providers []*CryptoProvider) {
+func EnumProviders() (providers []*CryptoProvider, err error) {
 	var dwIndex, pdwProvType, pcbProvName uint32
 
 	dwIndex = 0
@@ -130,23 +145,21 @@ func EnumProviders() (providers []*CryptoProvider) {
 		)
 		if r1 == 0 {
 			if err == windows.ERROR_NO_MORE_ITEMS {
-				return providers
+				return providers, nil
 			} else {
-				fmt.Println("Ошибка", err.Error())
+				return nil, err
 			}
 		}
 		szProvName := make([]byte, pcbProvName)
-		r1, _, err = procCryptEnumProviders.Call(
+		if r1, _, err = procCryptEnumProviders.Call(
 			uintptr(dwIndex),
 			uintptr(0),
 			0,
 			uintptr(unsafe.Pointer(&pdwProvType)),
 			uintptr(unsafe.Pointer(&szProvName[0])),
 			uintptr(unsafe.Pointer(&pcbProvName)),
-		)
-		if r1 == 0 {
-			fmt.Println("Ошибка2", err.Error())
-			break
+		); r1 == 0 {
+			return nil, err
 		}
 		providers = append(providers, &CryptoProvider{
 			ProviderName: string(szProvName),
@@ -154,10 +167,10 @@ func EnumProviders() (providers []*CryptoProvider) {
 		})
 		dwIndex++
 	}
-	return providers
+	return providers, nil
 }
 
-//TODO: not implemented yet
+//TODO: not implemented yet,there is not working stub
 // GetDefaultProvider BOOL CryptGetDefaultProviderW(
 //[in]      DWORD  dwProvType,
 //[in]      DWORD  *pdwReserved,
