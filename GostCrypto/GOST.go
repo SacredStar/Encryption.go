@@ -25,7 +25,7 @@ func CreateHashFromData(hProvider windows.Handle, algID AlgorythmID, pbdata *byt
 // CryptCreateHash
 //BOOL CryptCreateHash(
 //[in]  HCRYPTPROV hProv,
-//[in]  ALG_ID     Algid(uint32),
+//[in]  ALG_ID     Algid,
 //[in]  HCRYPTKEY  hKey =0 TODO: check this for HMAC/MAC,
 //[in]  DWORD      dwFlags,
 //[out] HCRYPTHASH *phHash
