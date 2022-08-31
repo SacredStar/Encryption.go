@@ -1,5 +1,7 @@
 /main.go
-./sdk
+./sdk/*
 ./cpverify.exe
 ./test.txt
 ./.idea
+/.idea/.gitignore
+/.idea/.name
