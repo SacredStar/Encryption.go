@@ -1,4 +1,4 @@
-module github.com/SacredStar/Encryption.go/v1.0.0
+module github.com/SacredStar/Encryption.go
 
 go 1.18
 
