@@ -1,4 +1,4 @@
-package GostCrypto
+package main
 
 import (
 	"fmt"
@@ -132,7 +132,6 @@ func GetProviderParam(handleProvider windows.Handle) (param []byte, err error) {
 //);
 func EnumProviders() (providers []*CryptoProvider, err error) {
 	var dwIndex, pdwProvType, pcbProvName uint32
-
 	dwIndex = 0
 	for {
 		r1, _, err := procCryptEnumProviders.Call(

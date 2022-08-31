@@ -1,4 +1,4 @@
-package GostCrypto
+package main
 
 import "syscall"
 
@@ -12,7 +12,7 @@ const (
 	ProvGost2012_512 ProvType = 81
 )
 
-//Initializing libs for future usage, must use Laze dll to prevent leaking
+//Initializing libs for future usage, must use Lazy dll to prevent leaking
 var (
 	advapi32                    = syscall.NewLazyDLL("advapi32.dll")
 	procCryptEnumProviders      = advapi32.NewProc("CryptEnumProvidersW")
