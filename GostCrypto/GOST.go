@@ -45,7 +45,7 @@ func CryptCreateHash(hProvider windows.Handle, algID AlgorythmID, hKey int, hash
 // CryptHashData
 //BOOL CryptHashData(
 //[in] HCRYPTHASH hHash,
-//[in] const BYTE *pbData,
+//[in] BYTE *pbData,
 //[in] DWORD      dwDataLen,
 //[in] DWORD      dwFlags
 func CryptHashData(hHash windows.Handle, pbdata *byte, dwDataLen uint32) error {
