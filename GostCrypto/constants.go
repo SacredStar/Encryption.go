@@ -18,6 +18,9 @@ var (
 	procCryptEnumProviders      = advapi32.NewProc("CryptEnumProvidersW")
 	procCryptGetDefaultProvider = advapi32.NewProc("CryptGetDefaultProviderW")
 	procCryptGetProviderParam   = advapi32.NewProc("CryptGetProvParam")
+	procCryptCreateHash         = advapi32.NewProc("CryptCreateHash")
+	procCryptHashData           = advapi32.NewProc("CryptHashData")
+	procGetHashParam            = advapi32.NewProc("CryptGetHashParam")
 )
 
 type GetProviderParams int
@@ -98,4 +101,8 @@ const (
 
 	// CALG_GR3411_HMAC34 Идентификатор алгоритма ключевого хэширования (HMAC, Hash-based Message Authentication Code) на базе алгоритма хэширования по ГОСТ Р 34.11.
 	CALG_GR3411_HMAC34 AlgorythmID = 0x8028
+)
+
+const (
+	HP_HASHVAL uint32 = 0x0002
 )

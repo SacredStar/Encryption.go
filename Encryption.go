@@ -17,14 +17,21 @@ CryptAcquireContext(
 */
 
 func main() {
-	var hProvhandle windows.Handle = 0
-	if err := windows.CryptAcquireContext(&hProvhandle, nil, nil, 80, windows.CRYPT_VERIFYCONTEXT); err != nil {
+	var hProvHandle, hHash windows.Handle
+	if err := windows.CryptAcquireContext(&hProvHandle, nil, nil, 80, windows.CRYPT_VERIFYCONTEXT); err != nil {
 		fmt.Println(err.Error())
 	}
-
-	GostCrypto.GetProviderParam(hProvhandle)
-	providers := GostCrypto.EnumProviders()
-	for provider := range providers {
-		fmt.Printf("%s\n", &provider)
-	}
+	GostCrypto.CryptCreateHash(hProvHandle, GostCrypto.CALG_GR3411_2012_256, 0, &hHash)
+	str := []byte("hello")
+	GostCrypto.CryptHashData(hHash, &str[0], 5)
+	//hash := make([]byte, 256)
+	//var DataLen uint32
+	GostCrypto.CryptGetHashParam(hHash, GostCrypto.HP_HASHVAL)
+	//fmt.Printf("%s", hash)
+	/*
+		GostCrypto.GetProviderParam(hProvhandle)
+		providers := GostCrypto.EnumProviders()
+		for provider := range providers {
+			fmt.Printf("%s\n", &provider)
+		}*/
 }
