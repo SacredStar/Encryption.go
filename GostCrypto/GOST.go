@@ -170,6 +170,22 @@ func EnumProviders() (providers []*CryptoProvider, err error) {
 	return providers, nil
 }
 
+//BOOL CryptGenRandom(
+//[in]      HCRYPTPROV hProv,
+//[in]      DWORD      dwLen,
+//[in, out] BYTE       *pbBuffer
+func CryptGenRandom(hProvider windows.Handle, dwLenBytes uint32) (random []byte, err error) {
+	rnd := make([]byte, dwLenBytes)
+	if r1, _, err := procCryptGenRandom.Call(
+		uintptr(hProvider),
+		uintptr(dwLenBytes),
+		uintptr(unsafe.Pointer(&rnd[0])),
+	); r1 == 0 {
+		return nil, err
+	}
+	return rnd, nil
+}
+
 //TODO: not implemented yet,there is not working stub
 // GetDefaultProvider BOOL CryptGetDefaultProviderW(
 //[in]      DWORD  dwProvType,

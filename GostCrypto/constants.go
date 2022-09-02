@@ -21,6 +21,7 @@ var (
 	procCryptCreateHash         = advapi32.NewProc("CryptCreateHash")
 	procCryptHashData           = advapi32.NewProc("CryptHashData")
 	procGetHashParam            = advapi32.NewProc("CryptGetHashParam")
+	procCryptGenRandom          = advapi32.NewProc("CryptGenRandom")
 )
 
 type GetProviderParams int
