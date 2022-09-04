@@ -107,3 +107,8 @@ const (
 const (
 	HP_HASHVAL uint32 = 0x0002
 )
+
+const (
+	InvalidAlgSpecified = "Invalid algorithm specified."
+	InvalidParameter    = "The parameter is incorrect."
+)
