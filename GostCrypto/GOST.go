@@ -8,33 +8,33 @@ import (
 )
 
 type GostCrypto struct {
-	hProvider windows.Handle
-	hHash     windows.Handle
+	hProvider Handle
+	hHash     Handle
 }
 
-func (gost *GostCrypto) GetPtrToProviderHandle() *windows.Handle {
+func (gost *GostCrypto) GetPtrToProviderHandle() *Handle {
 	return &gost.hProvider
 }
 
-func (gost *GostCrypto) GetPtrToHashHandle() *windows.Handle {
+func (gost *GostCrypto) GetPtrToHashHandle() *Handle {
 	return &gost.hHash
 }
 
 //NewGostCrypto Initialisation function
-func NewGostCrypto(providerType uint32, flags uint32) *GostCrypto {
-	var hProvider windows.Handle
-	if err := windows.CryptAcquireContext(&hProvider, nil, nil, providerType, flags); err != nil {
+func NewGostCrypto(providerType ProvType, flags CryptAcquireContextDWFlagsParams) *GostCrypto {
+	var hProvider Handle
+	if err := CryptAcquireContext(&hProvider, nil, nil, providerType, flags); err != nil {
 		fmt.Println(err.Error())
 	}
 	return &GostCrypto{hProvider: hProvider}
 }
 
 //CreateHashFromData upper level function for creating hash for data
-func (gost *GostCrypto) CreateHashFromData(algID AlgorythmID, pbdata *byte, lendata uint32) (hashValue []byte, err error) {
+func (gost *GostCrypto) CreateHashFromData(algID AlgoID, pbData *byte, lenData uint32) (hashValue []byte, err error) {
 	if err := gost.CryptCreateHash(algID, 0, &gost.hHash); err != nil {
 		return nil, err
 	}
-	if err := gost.CryptHashData(pbdata, lendata); err != nil {
+	if err := gost.CryptHashData(pbData, lenData); err != nil {
 		return nil, err
 	}
 	hVal, err := gost.CryptGetHashParam(HP_HASHVAL)
@@ -45,6 +45,24 @@ func (gost *GostCrypto) CreateHashFromData(algID AlgorythmID, pbdata *byte, lend
 	return hVal, nil
 }
 
+// CryptAcquireContext
+//[out] HCRYPTPROV *phProv,
+//[in]  LPCWSTR    szContainer,
+//[in]  LPCWSTR    szProvider,
+//[in]  DWORD      dwProvType,
+//[in]  DWORD      dwFlags
+func CryptAcquireContext(provHandle *Handle, container *uint16, provider *uint16, provType ProvType, flags CryptAcquireContextDWFlagsParams) (err error) {
+	if r1, _, err := procCryptAcquireContext.Call(
+		uintptr(unsafe.Pointer(provHandle)),
+		uintptr(unsafe.Pointer(container)),
+		uintptr(unsafe.Pointer(provider)),
+		uintptr(provType),
+		uintptr(flags)); r1 == 0 {
+		return err
+	}
+	return nil
+}
+
 // CryptCreateHash
 //BOOL CryptCreateHash(
 //[in]  HCRYPTPROV hProv,
@@ -52,7 +70,7 @@ func (gost *GostCrypto) CreateHashFromData(algID AlgorythmID, pbdata *byte, lend
 //[in]  HCRYPTKEY  hKey =0 TODO: check this for HMAC/MAC,
 //[in]  DWORD      dwFlags,
 //[out] HCRYPTHASH *phHash
-func (gost *GostCrypto) CryptCreateHash(algID AlgorythmID, hKey int, hashHandle *windows.Handle) error {
+func (gost *GostCrypto) CryptCreateHash(algID AlgoID, hKey int, hashHandle *Handle) error {
 	dwFlags := 0
 	if r1, _, err := procCryptCreateHash.Call(
 		uintptr(gost.hProvider),
@@ -71,11 +89,11 @@ func (gost *GostCrypto) CryptCreateHash(algID AlgorythmID, hKey int, hashHandle 
 //[in] BYTE *pbData,
 //[in] DWORD      dwDataLen,
 //[in] DWORD      dwFlags
-func (gost *GostCrypto) CryptHashData(pbdata *byte, dwDataLen uint32) error {
+func (gost *GostCrypto) CryptHashData(pbData *byte, dwDataLen uint32) error {
 	dwFlags := 0
 	if r1, _, err := procCryptHashData.Call(
 		uintptr(gost.hHash),
-		uintptr(unsafe.Pointer(pbdata)),
+		uintptr(unsafe.Pointer(pbData)),
 		uintptr(dwDataLen),
 		uintptr(dwFlags)); r1 == 0 {
 		return err
@@ -89,70 +107,69 @@ func (gost *GostCrypto) CryptHashData(pbdata *byte, dwDataLen uint32) error {
 //[out]     BYTE       *pbData,
 //[in, out] DWORD(uint32)      *pdwDataLen,
 //[in]      DWORD      dwFlags
-func (gost *GostCrypto) CryptGetHashParam(dwParam uint32) (hashValue []byte, err error) {
-	var pdwDatalen uint32
+func (gost *GostCrypto) CryptGetHashParam(dwParam dwParam) (hashValue []byte, err error) {
+	var pdwDataLen uint32
 	//pbData1 := make([]byte, 256)
 	dwFlags := 0
 	if r1, _, err := procGetHashParam.Call(
 		uintptr(gost.hHash),
 		uintptr(dwParam),
 		uintptr(0),
-		uintptr(unsafe.Pointer(&pdwDatalen)),
+		uintptr(unsafe.Pointer(&pdwDataLen)),
 		uintptr(dwFlags)); r1 == 0 {
 		return nil, err
 	}
-	pbData := make([]byte, pdwDatalen)
+	pbData := make([]byte, pdwDataLen)
 	if r1, _, err := procGetHashParam.Call(
 		uintptr(gost.hHash),
 		uintptr(dwParam),
 		uintptr(unsafe.Pointer(&pbData[0])),
-		uintptr(unsafe.Pointer(&pdwDatalen)),
+		uintptr(unsafe.Pointer(&pdwDataLen)),
 		uintptr(dwFlags)); r1 == 0 {
 		return nil, err
 	}
 	return pbData, nil
 }
 
-// GetProviderParam [based on]
-//[in]      HCRYPTPROV(windows.Handle) hProv,
+// GetProviderName GetProviderParam [based on]
+//[in]      HCRYPTPROV(Handle) hProv,
 //[in]      DWORD(uint32)      dwParam,
 //[out]     BYTE(*byte)       *pbData,
 //[in, out] DWORD(uint32)      *pdwDataLen,
 //[in]      DWORD(uint32)      dwFlags
 //TODO: rename to get provider name? oe needed other params?
 func (gost *GostCrypto) GetProviderName() (param []byte, err error) {
-	var pdwDtalen uint32
+	var pdwDataLen uint32
 	//Получаем размер буфера для pbData
 	if r1, _, err := procCryptGetProviderParam.Call(
 		uintptr(gost.hProvider),
 		uintptr(uint32(PP_NAME)),
 		0,
-		uintptr(unsafe.Pointer(&pdwDtalen)),
+		uintptr(unsafe.Pointer(&pdwDataLen)),
 		0); r1 == 0 {
 		return nil, err
 	}
 	//Создаем переменную для записи
-	pbData := make([]byte, pdwDtalen)
+	pbData := make([]byte, pdwDataLen)
 
 	if r1, _, err := procCryptGetProviderParam.Call(
 		uintptr(gost.hProvider),
 		uintptr(uint32(PP_NAME)),
 		uintptr(unsafe.Pointer(&pbData[0])),
-		uintptr(unsafe.Pointer(&pdwDtalen)),
+		uintptr(unsafe.Pointer(&pdwDataLen)),
 		0); r1 == 0 {
 		return nil, err
 	}
 	return pbData, nil
 }
 
-// EnumProviders BOOL CryptEnumProvidersW(
+// EnumProviders
 //[in]      DWORD  dwIndex,
 //[in]      DWORD  *pdwReserved,
 //[in]      DWORD(uint32)  dwFlags,
 //[out]     DWORD  *pdwProvType,
 //[out]     LPWSTR szProvName,
 //[in, out] DWORD  *pcbProvName
-//);
 func (gost *GostCrypto) EnumProviders() (providers []*CryptoProvider, err error) {
 	var dwIndex, pdwProvType, pcbProvName uint32
 
@@ -190,14 +207,13 @@ func (gost *GostCrypto) EnumProviders() (providers []*CryptoProvider, err error)
 		})
 		dwIndex++
 	}
-	return providers, nil
 }
 
-//BOOL CryptGenRandom(
+//CryptGenRandom
 //[in]      HCRYPTPROV hProv,
 //[in]      DWORD      dwLen,
 //[in, out] BYTE       *pbBuffer
-func (gost *GostCrypto) CryptGenRandom(hProvider windows.Handle, dwLenBytes uint32) (random []byte, err error) {
+func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32) (random []byte, err error) {
 	rnd := make([]byte, dwLenBytes)
 	if r1, _, err := procCryptGenRandom.Call(
 		uintptr(hProvider),
@@ -209,24 +225,24 @@ func (gost *GostCrypto) CryptGenRandom(hProvider windows.Handle, dwLenBytes uint
 	return rnd, nil
 }
 
-//TODO: not implemented yet,there is not working stub
-// GetDefaultProvider BOOL CryptGetDefaultProviderW(
+// GetDefaultProvider BOOL CryptGetDefaultProviderW( //TODO: not implemented yet,there is not working stub
 //[in]      DWORD  dwProvType,
 //[in]      DWORD  *pdwReserved,
 //[in]      DWORD  dwFlags,
 //[out]     LPWSTR pszProvName,
 //[in, out] DWORD  *pcbProvName
-//);
 func (gost *GostCrypto) GetDefaultProvider() {
 	result, name := "", ""
 	ptr, _ := syscall.UTF16PtrFromString(result)
 	ptrName, _ := syscall.UTF16PtrFromString(name)
-	procCryptGetDefaultProvider.Call(
+	if r1, _, err := procCryptGetDefaultProvider.Call(
 		uintptr(ProvGost2012),
 		0,
 		0x1,
 		uintptr(unsafe.Pointer(ptr)),
 		uintptr(unsafe.Pointer(ptrName)),
-	)
+	); r1 == 0 {
+		fmt.Println(err)
+	}
 	fmt.Println(&ptr, &ptrName)
 }
