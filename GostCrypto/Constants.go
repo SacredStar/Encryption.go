@@ -7,6 +7,8 @@ package GostCrypto
 type ProvType uint32
 
 // Provider types
+
+//goland:noinspection GoSnakeCaseUsage
 const (
 	ProvGost94       ProvType = 71
 	ProvGost2001     ProvType = 75
@@ -18,6 +20,7 @@ const (
 
 type CryptAcquireContextDWFlagsParams uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_VERIFYCONTEXT  CryptAcquireContextDWFlagsParams = 0xF0000000
 	CRYPT_NEWKEYSET      CryptAcquireContextDWFlagsParams = 0x00000008
@@ -30,6 +33,7 @@ const (
 
 type ExportKeyParams uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_Y_ONLY        ExportKeyParams = 0x00000001
 	CRYPT_SSL2_FALLBACK ExportKeyParams = 0x00000002
@@ -41,6 +45,7 @@ const (
 
 type GenKeyParams uint32 //TODO: check parameter type
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_EXPORTABLE     GenKeyParams = 0x00000001
 	CRYPT_USER_PROTECTED GenKeyParams = 0x00000002
@@ -63,6 +68,7 @@ const (
 
 type GetProviderParams int
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	PP_ADMIN_PIN                       GetProviderParams = 0x1F
 	PP_NAME                            GetProviderParams = 0x4
@@ -113,6 +119,7 @@ const (
 
 type CryptCreateHashParams uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_SECRETDIGEST CryptCreateHashParams = 0x00000001
 )
@@ -121,12 +128,14 @@ const (
 
 type CryptHashSessionKeydwParams uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const CRYPT_LITTLE_ENDIAN CryptHashSessionKeydwParams = 0x00000001
 
 // dwFlags definitions for CryptSignHash and CryptVerifySignature
 
 type SignHashVerifySigndwFlags uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_NOHASHOID    SignHashVerifySigndwFlags = 0x00000001
 	CRYPT_TYPE2_FORMAT SignHashVerifySigndwFlags = 0x00000002 // Not supported
@@ -137,6 +146,7 @@ const (
 
 type CryptSetProviderGetDefaultProvDWFlag uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_MACHINE_DEFAULT CryptSetProviderGetDefaultProvDWFlag = 0x00000001
 	CRYPT_USER_DEFAULT    CryptSetProviderGetDefaultProvDWFlag = 0x00000002
@@ -161,6 +171,7 @@ const (
 
 type certEnrollParams uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	AT_KEYEXCHANGE certEnrollParams = 1
 	AT_SIGNATURE   certEnrollParams = 2
@@ -168,6 +179,7 @@ const (
 
 type dwParam uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	KP_IV               dwParam = 1  // Initialization vector
 	KP_SALT             dwParam = 2  // Salt value
@@ -214,19 +226,22 @@ const (
 	KP_PIN_ID           dwParam = 43
 	KP_PIN_INFO         dwParam = 44
 
-	// KP_PADDING
+	////KP_PADDING
+
 	PKCS5_PADDING  dwParam = 1 // PKCS 5 (sec 6.2) padding method
 	RANDOM_PADDING dwParam = 2
 	ZERO_PADDING   dwParam = 3
 
-	// KP_MODE
+	////KP_MODE
+
 	CRYPT_MODE_CBC dwParam = 1 // Cipher block chaining
 	CRYPT_MODE_ECB dwParam = 2 // Electronic code book
 	CRYPT_MODE_OFB dwParam = 3 // Output feedback mode
 	CRYPT_MODE_CFB dwParam = 4 // Cipher feedback mode
 	CRYPT_MODE_CTS dwParam = 5 // Ciphertext stealing mode
 
-	// KP_PERMISSIONS
+	//// KP_PERMISSIONS
+
 	CRYPT_ENCRYPT    dwParam = 0x0001 // Allow encryption
 	CRYPT_DECRYPT    dwParam = 0x0002 // Allow decryption
 	CRYPT_EXPORT     dwParam = 0x0004 // Allow key to be exported
@@ -249,6 +264,7 @@ const (
 
 type KeyStorageFlags uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_SEC_DESCR KeyStorageFlags = 0x00000001
 	CRYPT_PSTORE    KeyStorageFlags = 0x00000002
@@ -259,6 +275,7 @@ const (
 
 type ProtoFlags uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	CRYPT_FLAG_PCT1    ProtoFlags = 0x0001
 	CRYPT_FLAG_SSL2    ProtoFlags = 0x0002
@@ -273,6 +290,7 @@ const (
 
 type SetProvParams uint32
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 	PP_CLIENT_HWND            SetProvParams = 1
 	PP_CONTEXT_INFO           SetProvParams = 11

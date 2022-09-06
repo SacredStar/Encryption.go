@@ -25,6 +25,7 @@ type CryptoProvider struct {
 type AlgoID uint32
 
 //Идентификаторы алгоритмов
+//goland:noinspection GoSnakeCaseUsage
 const (
 	// CALG_GR3410EL Идентификатор алгоритма ЭЦП по ГОСТ Р 34.10-2001.
 	CALG_GR3410EL AlgoID = 0x2e23
@@ -57,6 +58,7 @@ const (
 	CALG_GR3411_HMAC34 AlgoID = 0x8028
 )
 
+//goland:noinspection ALL
 const (
 	InvalidAlgSpecified = "Invalid algorithm specified."
 	InvalidParameter    = "The parameter is incorrect."
