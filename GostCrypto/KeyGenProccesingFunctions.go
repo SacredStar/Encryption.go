@@ -11,7 +11,7 @@ import "unsafe"
 //[in]  ALG_ID     Algid, //TODO: need to add algs to constans.go and change algID type
 //[in]  DWORD      dwFlags,
 //[out] HCRYPTKEY  *phKey(handle)
-func CryptGenKey(provHandle, algID uint32, dwFlags GenKeyParams, keyHandle *Handle) (err error) {
+func (gost *GostCrypto) CryptGenKey(provHandle, algID uint32, dwFlags GenKeyParams, keyHandle *Handle) (err error) {
 	if r1, _, err := procCryptGenKey.Call(
 		uintptr(provHandle),
 		uintptr(algID),
@@ -24,7 +24,7 @@ func CryptGenKey(provHandle, algID uint32, dwFlags GenKeyParams, keyHandle *Hand
 
 // CryptDestroyKey
 //[in] HCRYPTKEY hKey
-func CryptDestroyKey(keyHandle Handle) (err error) {
+func (gost *GostCrypto) CryptDestroyKey(keyHandle Handle) (err error) {
 	if r1, _, err := procCryptDestroyKey.Call(
 		uintptr(keyHandle)); r1 == 0 {
 		return err
@@ -56,7 +56,7 @@ func CryptDeriveKey(handleProvider Handle, algID uint32, handleHash Handle, para
 //  [in]  DWORD     *pdwReserved = 0: reserved for future
 //  [in]  DWORD     dwFlags = 0 : reserved for future
 //  [out] HCRYPTKEY *phKey : copy
-func CryptDuplicateKey(handleKey Handle, pdwReserved uintptr, dwFlags uint32, handleKeyCopy *Handle) (err error) {
+func (gost *GostCrypto) CryptDuplicateKey(handleKey Handle, pdwReserved uintptr, dwFlags uint32, handleKeyCopy *Handle) (err error) {
 	if r1, _, err := procCryptDuplicateKey.Call(
 		uintptr(handleKey),
 		uintptr(pdwReserved),
@@ -74,7 +74,7 @@ func CryptDuplicateKey(handleKey Handle, pdwReserved uintptr, dwFlags uint32, ha
 //[in]      DWORD     dwFlags, for WL: or CRYPT_PUBLICCOMPRESS
 //[out]     BYTE      *pbData,
 //[in, out] DWORD     *pdwDataLen
-func CryptExportKey(handleKey Handle, hExportKey Handle, dwBlobType KeyBlobParams, dwFlags uint32, pbData *byte, pdwDataLen *uint32) (err error) {
+func (gost *GostCrypto) CryptExportKey(handleKey Handle, hExportKey Handle, dwBlobType KeyBlobParams, dwFlags uint32, pbData *byte, pdwDataLen *uint32) (err error) {
 	if r1, _, err := procCryptExportKey.Call(
 		uintptr(handleKey),
 		uintptr(hExportKey),
@@ -109,7 +109,7 @@ func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32) (ran
 //  [out]     BYTE      *pbData,
 //  [in, out] DWORD     *pdwDataLen,
 //  [in]      DWORD     dwFlags =0 : reserved for future
-func CryptGetKeyParam(hKey Handle, dwParams dwParam, pdData *byte, pdwDataLen *uint32, dwFlags uint32) (err error) {
+func (gost *GostCrypto) CryptGetKeyParam(hKey Handle, dwParams dwParam, pdData *byte, pdwDataLen *uint32, dwFlags uint32) (err error) {
 	if r1, _, err := procCryptGetKeyParam.Call(
 		uintptr(hKey),
 		uintptr(dwParams),
@@ -125,7 +125,7 @@ func CryptGetKeyParam(hKey Handle, dwParams dwParam, pdData *byte, pdwDataLen *u
 //  [in]  HCRYPTPROV hProv,
 //  [in]  DWORD      dwKeySpec,
 //  [out] HCRYPTKEY  *phUserKey
-func CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handle) (err error) {
+func (gost *GostCrypto) CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handle) (err error) {
 	if r1, _, err := procCryptGetUserKey.Call(
 		uintptr(hProv),
 		uintptr(dwKeySpecs),
@@ -145,7 +145,7 @@ func CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handl
 //                            Если импортируемый ключ будет заново экспортироваться, в этот параметр помещается флаг CRYPT_EXPORTABLE.
 //                            Если этот флаг не используется, вызовы функции CryptExportKey в MS CryptoAPI 2.0  с дескриптором ключа будут терпеть неудачу.
 //  [out] HCRYPTKEY  *phKey  Адрес, по которому функция копирует дескриптор импортированного либо диверсифицированного ключа.
-func CryptImportKey(hProv Handle, pbData *byte, dwDataLen uint32, hPubKey Handle, dwFlags GenKeyParams, phKey *Handle) (err error) {
+func (gost *GostCrypto) CryptImportKey(hProv Handle, pbData *byte, dwDataLen uint32, hPubKey Handle, dwFlags GenKeyParams, phKey *Handle) (err error) {
 	if r1, _, err := procCryptImportKey.Call(
 		uintptr(hProv),
 		uintptr(unsafe.Pointer(pbData)),
@@ -163,7 +163,7 @@ func CryptImportKey(hProv Handle, pbData *byte, dwDataLen uint32, hPubKey Handle
 //  [in] DWORD      dwParam, WL: KP_CERTIFICATE, KP_CIPHEROID, KP_DHOID,KP_HASHOID
 //  [in] const BYTE *pbData,
 //  [in] DWORD      dwFlags = 0 reserved for future
-func CryptSetKeyParam(hKey Handle, param dwParam, pbData *byte, flag CryptSetProviderGetDefaultProvDWFlag) (err error) {
+func (gost *GostCrypto) CryptSetKeyParam(hKey Handle, param dwParam, pbData *byte, flag CryptSetProviderGetDefaultProvDWFlag) (err error) {
 	if r1, _, err := procCryptSetKeyParam.Call(
 		//uintptr(hProv),
 		uintptr(hKey),
