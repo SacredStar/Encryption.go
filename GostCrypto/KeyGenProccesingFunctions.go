@@ -164,9 +164,9 @@ func CryptImportKey(hProv Handle, pbData *byte, dwDataLen uint32, hPubKey Handle
 //  [in] const BYTE *pbData,
 //  [in] DWORD      dwFlags = 0 reserved for future
 func CryptSetKeyParam(hKey Handle, param dwParam, pbData *byte, flag CryptSetProviderGetDefaultProvDWFlag) (err error) {
-	if r1, _, err := procCryptImportKey.Call(
+	if r1, _, err := procCryptSetKeyParam.Call(
 		//uintptr(hProv),
-		uintptr(unsafe.Pointer(hKey)),
+		uintptr(hKey),
 		uintptr(param),
 		uintptr(unsafe.Pointer(pbData)),
 		uintptr(flag)); r1 == 0 {
