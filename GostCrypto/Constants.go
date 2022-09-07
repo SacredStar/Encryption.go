@@ -66,53 +66,63 @@ const (
 
 //Get Provider Params
 
-type GetProviderParams int
+type GetSetProviderParams int
 
 //goland:noinspection GoSnakeCaseUsage
 const (
-	PP_ADMIN_PIN                       GetProviderParams = 0x1F
-	PP_NAME                            GetProviderParams = 0x4
-	PP_APPLI_CERT                      GetProviderParams = 0x12
-	PP_CHANGE_PASSWORD                 GetProviderParams = 0x7
-	PP_CONTAINER                       GetProviderParams = 0x6
-	PP_CRYPT_COUNT_KEY_USE             GetProviderParams = 0x29
-	PP_ENUMALGS                        GetProviderParams = 0x1
-	PP_ENUMALGS_EX                     GetProviderParams = 0x16
-	PP_ENUMCONTAINERS                  GetProviderParams = 0x2
-	PP_ENUMELECTROOTS                  GetProviderParams = 0x1A
-	PP_ENUMEX_SIGNING_PROT             GetProviderParams = 0x28
-	PP_ENUMMANDROOTS                   GetProviderParams = 0x19
-	PP_IMPTYPE                         GetProviderParams = 0x3
-	PP_KEY_TYPE_SUBTYPE                GetProviderParams = 0xA
-	PP_KEYEXCHANGE_PIN                 GetProviderParams = 0x20
-	PP_KEYSET_SEC_DESCR                GetProviderParams = 0x8
-	PP_KEYSET_TYPE                     GetProviderParams = 0x1B
-	PP_KEYSPEC                         GetProviderParams = 0x27
-	PP_KEYSTORAGE                      GetProviderParams = 0x11
-	PP_KEYX_KEYSIZE_INC                GetProviderParams = 0x23
-	PP_PROVTYPE                        GetProviderParams = 0x10
-	PP_ROOT_CERTSTORE                  GetProviderParams = 0x2E
-	PP_SESSION_KEYSIZE                 GetProviderParams = 0x14
-	PP_SGC_INFO                        GetProviderParams = 0x25
-	PP_SIG_KEYSIZE_INC                 GetProviderParams = 0x22
-	PP_SIGNATURE_PIN                   GetProviderParams = 0x21
-	PP_SMARTCARD_GUID                  GetProviderParams = 0x2D
-	PP_SMARTCARD_READER                GetProviderParams = 0x2B
-	PP_SYM_KEYSIZE                     GetProviderParams = 0x13
-	PP_UI_PROMPT                       GetProviderParams = 0x15
-	PP_UNIQUE_CONTAINER                GetProviderParams = 0x24
-	PP_USE_HARDWARE_RNG                GetProviderParams = 0x26
-	PP_USER_CERTSTORE                  GetProviderParams = 0x2A
-	PP_VERSION                         GetProviderParams = 0x5
-	PP_ENUMALGSGetProvParam            GetProviderParams = 1
-	PP_ENUMCONTAINERSGetProvParam      GetProviderParams = 2
-	PP_IMPTYPEGetProvParam             GetProviderParams = 3
-	PP_NAMEGetProvParam                GetProviderParams = 4
-	PP_VERSIONGetProvParam             GetProviderParams = 5
-	PP_CERTCHAIN                       GetProviderParams = 9 // for retrieving certificates from tokens
-	PP_KEY_TYPE_SUBTYPEGetProvParam    GetProviderParams = 10
-	PP_USE_HARDWARE_RNGGetProvParam    GetProviderParams = 38
-	PP_ENUMEX_SIGNING_PROTGetProvParam GetProviderParams = 40
+	PP_CLIENT_HWND                     GetSetProviderParams = 1
+	PP_CONTEXT_INFO                    GetSetProviderParams = 11
+	PP_KEYEXCHANGE_KEYSIZE             GetSetProviderParams = 12
+	PP_SIGNATURE_KEYSIZE               GetSetProviderParams = 13
+	PP_KEYEXCHANGE_ALG                 GetSetProviderParams = 14
+	PP_SIGNATURE_ALG                   GetSetProviderParams = 15
+	PP_DELETEKEY                       GetSetProviderParams = 24
+	PP_PIN_PROMPT_STRING               GetSetProviderParams = 44
+	PP_SECURE_KEYEXCHANGE_PIN          GetSetProviderParams = 47
+	PP_SECURE_SIGNATURE_PIN            GetSetProviderParams = 48
+	PP_ADMIN_PIN                       GetSetProviderParams = 0x1F
+	PP_NAME                            GetSetProviderParams = 0x4
+	PP_APPLI_CERT                      GetSetProviderParams = 0x12
+	PP_CHANGE_PASSWORD                 GetSetProviderParams = 0x7
+	PP_CONTAINER                       GetSetProviderParams = 0x6
+	PP_CRYPT_COUNT_KEY_USE             GetSetProviderParams = 0x29
+	PP_ENUMALGS                        GetSetProviderParams = 0x1
+	PP_ENUMALGS_EX                     GetSetProviderParams = 0x16
+	PP_ENUMCONTAINERS                  GetSetProviderParams = 0x2
+	PP_ENUMELECTROOTS                  GetSetProviderParams = 0x1A
+	PP_ENUMEX_SIGNING_PROT             GetSetProviderParams = 0x28
+	PP_ENUMMANDROOTS                   GetSetProviderParams = 0x19
+	PP_IMPTYPE                         GetSetProviderParams = 0x3
+	PP_KEY_TYPE_SUBTYPE                GetSetProviderParams = 0xA
+	PP_KEYEXCHANGE_PIN                 GetSetProviderParams = 0x20
+	PP_KEYSET_SEC_DESCR                GetSetProviderParams = 0x8
+	PP_KEYSET_TYPE                     GetSetProviderParams = 0x1B
+	PP_KEYSPEC                         GetSetProviderParams = 0x27
+	PP_KEYSTORAGE                      GetSetProviderParams = 0x11
+	PP_KEYX_KEYSIZE_INC                GetSetProviderParams = 0x23
+	PP_PROVTYPE                        GetSetProviderParams = 0x10
+	PP_ROOT_CERTSTORE                  GetSetProviderParams = 0x2E
+	PP_SESSION_KEYSIZE                 GetSetProviderParams = 0x14
+	PP_SGC_INFO                        GetSetProviderParams = 0x25
+	PP_SIG_KEYSIZE_INC                 GetSetProviderParams = 0x22
+	PP_SIGNATURE_PIN                   GetSetProviderParams = 0x21
+	PP_SMARTCARD_GUID                  GetSetProviderParams = 0x2D
+	PP_SMARTCARD_READER                GetSetProviderParams = 0x2B
+	PP_SYM_KEYSIZE                     GetSetProviderParams = 0x13
+	PP_UI_PROMPT                       GetSetProviderParams = 0x15
+	PP_UNIQUE_CONTAINER                GetSetProviderParams = 0x24
+	PP_USE_HARDWARE_RNG                GetSetProviderParams = 0x26
+	PP_USER_CERTSTORE                  GetSetProviderParams = 0x2A
+	PP_VERSION                         GetSetProviderParams = 0x5
+	PP_ENUMALGSGetProvParam            GetSetProviderParams = 1
+	PP_ENUMCONTAINERSGetProvParam      GetSetProviderParams = 2
+	PP_IMPTYPEGetProvParam             GetSetProviderParams = 3
+	PP_NAMEGetProvParam                GetSetProviderParams = 4
+	PP_VERSIONGetProvParam             GetSetProviderParams = 5
+	PP_CERTCHAIN                       GetSetProviderParams = 9 // for retrieving certificates from tokens
+	PP_KEY_TYPE_SUBTYPEGetProvParam    GetSetProviderParams = 10
+	PP_USE_HARDWARE_RNGGetProvParam    GetSetProviderParams = 38
+	PP_ENUMEX_SIGNING_PROTGetProvParam GetSetProviderParams = 40
 )
 
 // Create hash Params
@@ -283,23 +293,4 @@ const (
 	CRYPT_FLAG_TLS1    ProtoFlags = 0x0008
 	CRYPT_FLAG_IPSEC   ProtoFlags = 0x0010
 	CRYPT_FLAG_SIGNING ProtoFlags = 0x0020
-)
-
-//
-// CryptSetProvParam
-
-type SetProvParams uint32
-
-//goland:noinspection GoSnakeCaseUsage
-const (
-	PP_CLIENT_HWND            SetProvParams = 1
-	PP_CONTEXT_INFO           SetProvParams = 11
-	PP_KEYEXCHANGE_KEYSIZE    SetProvParams = 12
-	PP_SIGNATURE_KEYSIZE      SetProvParams = 13
-	PP_KEYEXCHANGE_ALG        SetProvParams = 14
-	PP_SIGNATURE_ALG          SetProvParams = 15
-	PP_DELETEKEY              SetProvParams = 24
-	PP_PIN_PROMPT_STRING      SetProvParams = 44
-	PP_SECURE_KEYEXCHANGE_PIN SetProvParams = 47
-	PP_SECURE_SIGNATURE_PIN   SetProvParams = 48
 )

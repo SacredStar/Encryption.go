@@ -7,6 +7,9 @@ import (
 	"unsafe"
 )
 
+// Package provides a cryptoapi  win32 functions(started with Crypt prefix), and high level function.High-Level
+// must be used ,except scenario that they doesn't provide expected behavior
+
 type GostCrypto struct {
 	hProvider Handle
 	hHash     Handle
@@ -20,7 +23,11 @@ func (gost *GostCrypto) GetPtrToHashHandle() *Handle {
 	return &gost.hHash
 }
 
-//NewGostCrypto Initialisation function
+//
+// Init and provider parameters HIgh - Level function
+//
+
+//NewGostCrypto Initialisation function, get crypto provider context
 func NewGostCrypto(providerType ProvType, flags CryptAcquireContextDWFlagsParams) *GostCrypto {
 	var hProvider Handle
 	if err := CryptAcquireContext(&hProvider, nil, nil, providerType, flags); err != nil {
@@ -43,24 +50,6 @@ func (gost *GostCrypto) CreateHashFromData(algID AlgoID, pbData *byte, lenData u
 	}
 	//TODO: defer CryptReleaseHash?
 	return hVal, nil
-}
-
-// CryptAcquireContext
-//[out] HCRYPTPROV *phProv,
-//[in]  LPCWSTR    szContainer,
-//[in]  LPCWSTR    szProvider,
-//[in]  DWORD      dwProvType,
-//[in]  DWORD      dwFlags
-func CryptAcquireContext(provHandle *Handle, container *uint16, provider *uint16, provType ProvType, flags CryptAcquireContextDWFlagsParams) (err error) {
-	if r1, _, err := procCryptAcquireContext.Call(
-		uintptr(unsafe.Pointer(provHandle)),
-		uintptr(unsafe.Pointer(container)),
-		uintptr(unsafe.Pointer(provider)),
-		uintptr(provType),
-		uintptr(flags)); r1 == 0 {
-		return err
-	}
-	return nil
 }
 
 // CryptCreateHash
@@ -207,22 +196,6 @@ func (gost *GostCrypto) EnumProviders() (providers []*CryptoProvider, err error)
 		})
 		dwIndex++
 	}
-}
-
-//CryptGenRandom
-//[in]      HCRYPTPROV hProv,
-//[in]      DWORD      dwLen,
-//[in, out] BYTE       *pbBuffer
-func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32) (random []byte, err error) {
-	rnd := make([]byte, dwLenBytes)
-	if r1, _, err := procCryptGenRandom.Call(
-		uintptr(hProvider),
-		uintptr(dwLenBytes),
-		uintptr(unsafe.Pointer(&rnd[0])),
-	); r1 == 0 {
-		return nil, err
-	}
-	return rnd, nil
 }
 
 // GetDefaultProvider BOOL CryptGetDefaultProviderW( //TODO: not implemented yet,there is not working stub
