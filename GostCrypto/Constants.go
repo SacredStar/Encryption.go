@@ -185,6 +185,7 @@ type certEnrollParams uint32
 const (
 	AT_KEYEXCHANGE certEnrollParams = 1
 	AT_SIGNATURE   certEnrollParams = 2
+	//AT_SYMMETRIC ??
 )
 
 type dwParam uint32

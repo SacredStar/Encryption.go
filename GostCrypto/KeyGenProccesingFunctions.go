@@ -67,16 +67,24 @@ func CryptDuplicateKey(handleKey Handle, pdwReserved uintptr, dwFlags uint32, ha
 	return nil
 }
 
-//TODO: from that position
 // CryptExportKey
 //[in]      HCRYPTKEY hKey,
 //[in]      HCRYPTKEY hExpKey,
-//[in]      DWORD     dwBlobType,
-//[in]      DWORD     dwFlags,
+//[in]      DWORD     dwBlobType: for WL must use only PUBLICKEYBLOB param
+//[in]      DWORD     dwFlags, for WL: or CRYPT_PUBLICCOMPRESS
 //[out]     BYTE      *pbData,
 //[in, out] DWORD     *pdwDataLen
-func CryptExportKey() {
-
+func CryptExportKey(handleKey Handle, hExportKey Handle, dwBlobType KeyBlobParams, dwFlags uint32, pbData *byte, pdwDataLen *uint32) (err error) {
+	if r1, _, err := procCryptExportKey.Call(
+		uintptr(handleKey),
+		uintptr(hExportKey),
+		uintptr(dwBlobType),
+		uintptr(dwFlags),
+		uintptr(unsafe.Pointer(pbData)),
+		uintptr(unsafe.Pointer(pdwDataLen))); r1 == 0 {
+		return err
+	}
+	return nil
 }
 
 //CryptGenRandom
@@ -100,34 +108,69 @@ func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32) (ran
 //  [in]      DWORD     dwParam,
 //  [out]     BYTE      *pbData,
 //  [in, out] DWORD     *pdwDataLen,
-//  [in]      DWORD     dwFlags
-func CryptGetKeyParam() {
-
+//  [in]      DWORD     dwFlags =0 : reserved for future
+func CryptGetKeyParam(hKey Handle, dwParams dwParam, pdData *byte, pdwDataLen *uint32, dwFlags uint32) (err error) {
+	if r1, _, err := procCryptGetKeyParam.Call(
+		uintptr(hKey),
+		uintptr(dwParams),
+		uintptr(unsafe.Pointer(pdData)),
+		uintptr(unsafe.Pointer(pdwDataLen)),
+		uintptr(dwFlags)); r1 == 0 {
+		return err
+	}
+	return nil
 }
 
 // CryptGetUserKey
 //  [in]  HCRYPTPROV hProv,
 //  [in]  DWORD      dwKeySpec,
 //  [out] HCRYPTKEY  *phUserKey
-func CryptGetUserKey() {
+func CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handle) (err error) {
+	if r1, _, err := procCryptGetUserKey.Call(
+		uintptr(hProv),
+		uintptr(dwKeySpecs),
+		uintptr(unsafe.Pointer(phUserKey))); r1 == 0 {
+		return err
+	}
+	return nil
 
 }
 
-// CryptImportKey [in]  HCRYPTPROV hProv,
-//  [in]  const BYTE *pbData,
-//  [in]  DWORD      dwDataLen,
-//  [in]  HCRYPTKEY  hPubKey,
-//  [in]  DWORD      dwFlags,
-//  [out] HCRYPTKEY  *phKey
-func CryptImportKey() {
-
+// CryptImportKey
+//  [in]  HCRYPTPROV hProv
+//  [in]  const BYTE *pbData Указатель на буфер, содержащий ключевой блоб, произведенный с иcпользованием функции CPExportKey()
+//  [in]  DWORD      dwDataLen
+//  [in]  HCRYPTKEY  hPubKey A handle to the cryptographic key that decrypts the key stored in pbData
+//  [in]  DWORD      dwFlags Значение флага. Этот параметр в настоящее время используется только, когда ключевая пара импортируется в криптопровайдер (в форме PRIVATEKEYBLOB).
+//                            Если импортируемый ключ будет заново экспортироваться, в этот параметр помещается флаг CRYPT_EXPORTABLE.
+//                            Если этот флаг не используется, вызовы функции CryptExportKey в MS CryptoAPI 2.0  с дескриптором ключа будут терпеть неудачу.
+//  [out] HCRYPTKEY  *phKey  Адрес, по которому функция копирует дескриптор импортированного либо диверсифицированного ключа.
+func CryptImportKey(hProv Handle, pbData *byte, dwDataLen uint32, hPubKey Handle, dwFlags GenKeyParams, phKey *Handle) (err error) {
+	if r1, _, err := procCryptImportKey.Call(
+		uintptr(hProv),
+		uintptr(unsafe.Pointer(pbData)),
+		uintptr(dwDataLen),
+		uintptr(hPubKey),
+		uintptr(dwFlags),
+		uintptr(unsafe.Pointer(phKey))); r1 == 0 {
+		return err
+	}
+	return nil
 }
 
-// CryptSetKeyParam
+// CryptSetKeyParam //TODO: check is needed  [in]  HCRYPTPROV hProv?
 //  [in] HCRYPTKEY  hKey,
-//  [in] DWORD      dwParam,
+//  [in] DWORD      dwParam, WL: KP_CERTIFICATE, KP_CIPHEROID, KP_DHOID,KP_HASHOID
 //  [in] const BYTE *pbData,
-//  [in] DWORD      dwFlags
-func CryptSetKeyParam() {
-
+//  [in] DWORD      dwFlags = 0 reserved for future
+func CryptSetKeyParam(hKey Handle, param dwParam, pbData *byte, flag CryptSetProviderGetDefaultProvDWFlag) (err error) {
+	if r1, _, err := procCryptImportKey.Call(
+		//uintptr(hProv),
+		uintptr(unsafe.Pointer(hKey)),
+		uintptr(param),
+		uintptr(unsafe.Pointer(pbData)),
+		uintptr(flag)); r1 == 0 {
+		return err
+	}
+	return nil
 }
