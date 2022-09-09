@@ -39,7 +39,7 @@ func (gost *GostCrypto) CryptDestroyKey(keyHandle Handle) (err error) {
 //  [in]      HCRYPTHASH hBaseData : descriptor of hasher
 //  [in]      DWORD      dwFlags GenKeyParams:CRYPT_EXPORTABLE,CRYPT_SERVER,CP_CRYPT_GETUPPERKEY
 //  [in, out] HCRYPTKEY  *phKey
-func CryptDeriveKey(handleProvider Handle, algID uint32, handleHash Handle, params GenKeyParams, keyHandle Handle) (err error) {
+func (gost *GostCrypto) CryptDeriveKey(handleProvider Handle, algID uint32, handleHash Handle, params GenKeyParams, keyHandle Handle) (err error) {
 	if r1, _, err := procCryptDeriveKey.Call(
 		uintptr(handleProvider),
 		uintptr(algID),
@@ -91,17 +91,29 @@ func (gost *GostCrypto) CryptExportKey(handleKey Handle, hExportKey Handle, dwBl
 //[in]      HCRYPTPROV hProv,
 //[in]      DWORD      dwLen,
 //[in, out] BYTE       *pbBuffer
-func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32) (random []byte, err error) {
-	rnd := make([]byte, dwLenBytes)
+func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32, pbBuffer *byte) (err error) {
 	if r1, _, err := procCryptGenRandom.Call(
 		uintptr(hProvider),
 		uintptr(dwLenBytes),
-		uintptr(unsafe.Pointer(&rnd[0])),
+		uintptr(unsafe.Pointer(pbBuffer)),
 	); r1 == 0 {
-		return nil, err
+		return err
 	}
-	return rnd, nil
+	return nil
 }
+
+//TODO: change that to GenRandom High Level Golang native function
+//func (gost *GostCrypto) CryptGenRandom(hProvider Handle, dwLenBytes uint32) (random []byte, err error) {
+//	rnd := make([]byte, dwLenBytes)
+//	if r1, _, err := procCryptGenRandom.Call(
+//		uintptr(hProvider),
+//		uintptr(dwLenBytes),
+//		uintptr(unsafe.Pointer(&rnd[0])),
+//	); r1 == 0 {
+//		return nil, err
+//	}
+//	return rnd, nil
+//}
 
 // CryptGetKeyParam
 //  [in]      HCRYPTKEY hKey,
@@ -123,7 +135,7 @@ func (gost *GostCrypto) CryptGetKeyParam(hKey Handle, dwParams dwParam, pdData *
 
 // CryptGetUserKey
 //  [in]  HCRYPTPROV hProv,
-//  [in]  DWORD      dwKeySpec,
+//  [in]  DWORD      dwKeySpec, AT_KEYEXCHANGE AT_SIGNATURE
 //  [out] HCRYPTKEY  *phUserKey
 func (gost *GostCrypto) CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handle) (err error) {
 	if r1, _, err := procCryptGetUserKey.Call(

@@ -38,8 +38,8 @@ var (
 	procCryptHashData        = advapi32.NewProc("CryptHashData")
 	procCryptHashSessionKey  = advapi32.NewProc("CryptHashSessionKey")
 	procCryptSetHashParam    = advapi32.NewProc("CryptSetHashParam")
-	procCryptSignHash        = advapi32.NewProc("CryptSignHash")
-	procCryptVerifySignature = advapi32.NewProc("CryptVerifySignature ")
+	procCryptSignHash        = advapi32.NewProc("CryptSignHashW")
+	procCryptVerifySignature = advapi32.NewProc("CryptVerifySignatureW")
 )
 
 type CryptoProvider struct {
