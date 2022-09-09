@@ -24,14 +24,22 @@ var (
 	procCryptGetKeyParam  = advapi32.NewProc("CryptGetKeyParam")
 	procCryptGetUserKey   = advapi32.NewProc("CryptGetUserKey")
 	procCryptImportKey    = advapi32.NewProc("CryptImportKey")
-	procCryptSetKeyParam  = advapi32.NewProc("CryptImportKey")
+	procCryptSetKeyParam  = advapi32.NewProc("CryptSetKeyParam")
 
+	//Other crypto process
 	procCryptEnumProviders      = advapi32.NewProc("CryptEnumProvidersW")
 	procCryptGetDefaultProvider = advapi32.NewProc("CryptGetDefaultProviderW")
 
-	procCryptCreateHash = advapi32.NewProc("CryptCreateHash")
-	procCryptHashData   = advapi32.NewProc("CryptHashData")
-	procGetHashParam    = advapi32.NewProc("CryptGetHashParam")
+	//Hash and Sign process
+	procCryptCreateHash      = advapi32.NewProc("CryptCreateHash")
+	procCryptDestroyHash     = advapi32.NewProc("CryptDestroyHash")
+	procCryptDuplicateHash   = advapi32.NewProc("CryptDuplicateHash")
+	procGetHashParam         = advapi32.NewProc("CryptGetHashParam")
+	procCryptHashData        = advapi32.NewProc("CryptHashData")
+	procCryptHashSessionKey  = advapi32.NewProc("CryptHashSessionKey")
+	procCryptSetHashParam    = advapi32.NewProc("CryptSetHashParam")
+	procCryptSignHash        = advapi32.NewProc("CryptSignHash")
+	procCryptVerifySignature = advapi32.NewProc("CryptVerifySignature ")
 )
 
 type CryptoProvider struct {
