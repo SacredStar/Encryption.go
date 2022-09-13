@@ -1,4 +1,4 @@
-package GostCrypto
+package win32
 
 import "syscall"
 
@@ -26,9 +26,30 @@ var (
 	procCryptImportKey    = advapi32.NewProc("CryptImportKey")
 	procCryptSetKeyParam  = advapi32.NewProc("CryptSetKeyParam")
 
+	// CMS
+	procCryptSignMessage                    = advapi32.NewProc("CryptSignMessage")
+	procCryptVerifyMessageSignature         = advapi32.NewProc("CryptVerifyMessageSignature")
+	procCryptVerifyDetachedMessageSignature = advapi32.NewProc("CryptVerifyDetachedMessageSignature")
+	procCryptDecodeMessage                  = advapi32.NewProc("CryptDecodeMessage")
+	procCryptEncryptMessage                 = advapi32.NewProc("CryptEncryptMessage")
+	procCryptDecryptMessage                 = advapi32.NewProc("CryptDecryptMessage")
+	procCryptGetMessageCertificates         = advapi32.NewProc("CryptGetMessageCertificates")
+	procCryptGetMessageSignerCount          = advapi32.NewProc("CryptGetMessageSignerCount")
+	procCryptHashMessage                    = advapi32.NewProc("CryptHashMessage")
+	procCryptSignAndEncryptMessage          = advapi32.NewProc("CryptSignAndEncryptMessage")
+	procCryptSignMessageWithKey             = advapi32.NewProc("CryptSignMessageWithKey")
+	procCryptMsgCalculateEncodedLength      = advapi32.NewProc("CryptMsgCalculateEncodedLength")
+	procCryptMsgOpenToEncode                = advapi32.NewProc("CryptMsgOpenToEncode")
+	procCryptMsgOpenToDecode                = advapi32.NewProc("CryptMsgOpenToDecode")
+	procCryptMsgUpdate                      = advapi32.NewProc("CryptMsgUpdate")
+	procCryptMsgGetParam                    = advapi32.NewProc("CryptMsgGetParam")
+	procCryptMsgControl                     = advapi32.NewProc("CryptMsgControl")
+	procCryptMsgClose                       = advapi32.NewProc("CryptMsgClose")
+	procCryptMsgDuplicate                   = advapi32.NewProc("CryptMsgDuplicate")
+
 	//Other crypto process
-	procCryptEnumProviders      = advapi32.NewProc("CryptEnumProvidersW")
-	procCryptGetDefaultProvider = advapi32.NewProc("CryptGetDefaultProviderW")
+	procCryptEnumProviders = advapi32.NewProc("CryptEnumProvidersW")
+	//procCryptGetDefaultProvider = advapi32.NewProc("CryptGetDefaultProviderW")
 
 	//Hash and Sign process
 	procCryptCreateHash      = advapi32.NewProc("CryptCreateHash")

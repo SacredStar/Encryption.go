@@ -1,4 +1,4 @@
-package GostCrypto
+package win32
 
 type AlgoID uint32
 
