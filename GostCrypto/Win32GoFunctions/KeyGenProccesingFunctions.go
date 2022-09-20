@@ -13,9 +13,9 @@ import (
 //[in]  ALG_ID     Algid, //TODO: need to add algs to constans.go and change algID type
 //[in]  DWORD      dwFlags,
 //[out] HCRYPTKEY  *phKey(handle)
-func CryptGenKey(provHandle, algID uint32, dwFlags GenKeyParams, keyHandle *Handle) (err error) {
+func CryptGenKey(hProv Handle, algID certEnrollParams, dwFlags GenKeyParams, keyHandle *Handle) (err error) {
 	if r1, _, err := procCryptGenKey.Call(
-		uintptr(provHandle),
+		uintptr(hProv),
 		uintptr(algID),
 		uintptr(dwFlags),
 		uintptr(unsafe.Pointer(keyHandle))); r1 == 0 {
