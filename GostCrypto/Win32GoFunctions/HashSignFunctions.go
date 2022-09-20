@@ -141,13 +141,14 @@ func CryptSignHash(hHash Handle, dwKeySpecs certEnrollParams, szDescription *byt
 //  [in] HCRYPTKEY  hPubKey, Дескриптор открытого ключа проверяемой подписи.
 //  [in] LPCWSTR    szDescription, Описание подписанных данных идентичное описанию, использованному при создании подписи.
 //  [in] DWORD      dwFlags =0, reserved for future use
-func CryptVerifySignature(hHash Handle, pbSignature *byte, dwSiglen uint32, hPubKey Handle, szDescription *byte) (err error) {
+func CryptVerifySignature(hHash Handle, pbSignature *byte, dwSiglen uint32, hPubKey Handle, szDescription *byte, dwFlags int) (err error) {
 	if r1, _, err := procCryptVerifySignature.Call(
 		uintptr(hHash),
 		uintptr(unsafe.Pointer(pbSignature)),
 		uintptr(dwSiglen),
 		uintptr(hPubKey),
-		uintptr(unsafe.Pointer(szDescription))); r1 == 0 {
+		uintptr(unsafe.Pointer(szDescription)),
+		uintptr(dwFlags)); r1 == 0 {
 		return err
 	}
 	return nil

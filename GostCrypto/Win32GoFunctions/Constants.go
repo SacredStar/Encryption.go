@@ -263,6 +263,11 @@ const (
 	CRYPT_IMPORT_KEY DwParam = 0x0080 // Allow key to be used for importing keys
 
 	HP_ALGID         DwParam = 0x0001 // Hash algorithm
+	HP_HASHSTARTVECT DwParam = 0x0008
+	HP_HASHCOPYVAL   DwParam = 0x0009
+	HP_OID           DwParam = 0x000a
+	HP_OPEN          DwParam = 0x000B
+	HP_OPAQUEBLOB    DwParam = 0x000C
 	HP_HASHVAL       DwParam = 0x0002 // Hash value
 	HP_HASHSIZE      DwParam = 0x0004 // Hash value size
 	HP_HMAC_INFO     DwParam = 0x0005 // information for creating an HMAC
@@ -294,4 +299,65 @@ const (
 	CRYPT_FLAG_TLS1    ProtoFlags = 0x0008
 	CRYPT_FLAG_IPSEC   ProtoFlags = 0x0010
 	CRYPT_FLAG_SIGNING ProtoFlags = 0x0020
+)
+
+type NTEErrors uint32
+
+const (
+	NTE_BAD_UID                   NTEErrors = 0x80090001
+	NTE_BAD_HASH                  NTEErrors = 0x80090002
+	NTE_BAD_KEY                   NTEErrors = 0x80090003
+	NTE_BAD_LEN                   NTEErrors = 0x80090004
+	NTE_BAD_DATA                  NTEErrors = 0x80090005
+	NTE_BAD_SIGNATURE             NTEErrors = 0x80090006
+	NTE_BAD_VER                   NTEErrors = 0x80090007
+	NTE_BAD_ALGID                 NTEErrors = 0x80090008
+	NTE_BAD_FLAGS                 NTEErrors = 0x80090009
+	NTE_BAD_TYPE                  NTEErrors = 0x8009000A
+	NTE_BAD_KEY_STATE             NTEErrors = 0x8009000B
+	NTE_BAD_HASH_STATE            NTEErrors = 0x8009000C
+	NTE_NO_KEY                    NTEErrors = 0x8009000D
+	NTE_NO_MEMORY                 NTEErrors = 0x8009000E
+	NTE_EXISTS                    NTEErrors = 0x8009000F
+	NTE_PERM                      NTEErrors = 0x80090010
+	NTE_NOT_FOUND                 NTEErrors = 0x80090011
+	NTE_DOUBLE_ENCRYPT            NTEErrors = 0x80090012
+	NTE_BAD_PROVIDER              NTEErrors = 0x80090013
+	NTE_BAD_PROV_TYPE             NTEErrors = 0x80090014
+	NTE_BAD_PUBLIC_KEY            NTEErrors = 0x80090015
+	NTE_BAD_KEYSET                NTEErrors = 0x80090016
+	NTE_PROV_TYPE_NOT_DEF         NTEErrors = 0x80090017
+	NTE_PROV_TYPE_ENTRY_BAD       NTEErrors = 0x80090018
+	NTE_KEYSET_NOT_DEF            NTEErrors = 0x80090019
+	NTE_KEYSET_ENTRY_BAD          NTEErrors = 0x8009001A
+	NTE_PROV_TYPE_NO_MATCH        NTEErrors = 0x8009001B
+	NTE_SIGNATURE_FILE_BAD        NTEErrors = 0x8009001C
+	NTE_PROVIDER_DLL_FAIL         NTEErrors = 0x8009001D
+	NTE_PROV_DLL_NOT_FOUND        NTEErrors = 0x8009001E
+	NTE_BAD_KEYSET_PARAM          NTEErrors = 0x8009001F
+	NTE_FAIL                      NTEErrors = 0x80090020
+	NTE_SYS_ERR                   NTEErrors = 0x80090021
+	NTE_SILENT_CONTEXT            NTEErrors = 0x80090022
+	NTE_TOKEN_KEYSET_STORAGE_FULL NTEErrors = 0x80090023
+	NTE_TEMPORARY_PROFILE         NTEErrors = 0x80090024
+	NTE_FIXEDPARAMETER            NTEErrors = 0x80090025
+	NTE_INVALID_HANDLE            NTEErrors = 0x80090026
+	NTE_INVALID_PARAMETER         NTEErrors = 0x80090027
+	NTE_BUFFER_TOO_SMALL          NTEErrors = 0x80090028
+	NTE_NOT_SUPPORTED             NTEErrors = 0x80090029
+	NTE_NO_MORE_ITEMS             NTEErrors = 0x8009002A
+	NTE_BUFFERS_OVERLAP           NTEErrors = 0x8009002B
+	NTE_DECRYPTION_FAILURE        NTEErrors = 0x8009002C
+	NTE_INTERNAL_ERROR            NTEErrors = 0x8009002D
+	NTE_UI_REQUIRED               NTEErrors = 0x8009002E
+	NTE_HMAC_NOT_SUPPORTED        NTEErrors = 0x8009002F
+	NTE_DEVICE_NOT_READY          NTEErrors = 0x80090030
+	NTE_AUTHENTICATION_IGNORED    NTEErrors = 0x80090031
+	NTE_VALIDATION_FAILED         NTEErrors = 0x80090032
+	NTE_INCORRECT_PASSWORD        NTEErrors = 0x80090033
+	NTE_ENCRYPTION_FAILURE        NTEErrors = 0x80090034
+	NTE_DEVICE_NOT_FOUND          NTEErrors = 0x80090035
+	NTE_USER_CANCELLED            NTEErrors = 0x80090036
+	NTE_PASSWORD_CHANGE_REQUIRED  NTEErrors = 0x80090037
+	NTE_NOT_ACTIVE_CONSOLE        NTEErrors = 0x80090038
 )
