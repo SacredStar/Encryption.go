@@ -27,12 +27,13 @@ func (gost *GostCrypto) GetPtrToHashHandle() *win32.Handle {
 //
 
 //NewGostCrypto Initialisation function, get crypto provider context
-func NewGostCrypto(providerType win32.ProvType, flags win32.CryptAcquireContextDWFlagsParams) *GostCrypto {
+func NewGostCrypto(container *uint16, provider *uint16, providerType win32.ProvType, flags win32.CryptAcquireContextDWFlagsParams) (*GostCrypto, error) {
 	var hProvider win32.Handle
-	if err := win32.CryptAcquireContext(&hProvider, nil, nil, providerType, flags); err != nil {
+	if err := win32.CryptAcquireContext(&hProvider, container, provider, providerType, flags); err != nil {
 		fmt.Println(err.Error())
+		return &GostCrypto{}, err
 	}
-	return &GostCrypto{hProvider: hProvider}
+	return &GostCrypto{hProvider: hProvider}, nil
 }
 
 //
