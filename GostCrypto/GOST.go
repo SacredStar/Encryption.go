@@ -135,3 +135,17 @@ func (gost *GostCrypto) EnumProviders() (providers []*win32.CryptoProvider, err 
 		dwIndex++
 	}
 }
+
+func (gost *GostCrypto) ReleaseResources() error {
+	if gost.GetPtrToHashHandle() != nil {
+		if err := win32.CryptDestroyHash(*gost.GetPtrToHashHandle()); err != nil {
+			return err
+		}
+	}
+	if gost.GetPtrToHashHandle() != nil {
+		if err := win32.CryptReleaseContext(*gost.GetPtrToProviderHandle()); err != nil {
+			return err
+		}
+	}
+	return nil
+}

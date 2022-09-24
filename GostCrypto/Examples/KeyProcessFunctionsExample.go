@@ -15,6 +15,7 @@ func KeyGenExample() (err error) {
 	//Создание ключевой пары
 	//Задается имя ключевого контейнера
 
+	fmt.Println("Функция-пример создания ключевого окнтейнера.")
 	Container, err := syscall.UTF16PtrFromString("user")
 	if err != nil {
 		fmt.Printf("error get ptr from string")
