@@ -14,6 +14,7 @@ import (
 func KeyGenExample() (err error) {
 	//Создание ключевой пары
 	//Задается имя ключевого контейнера
+
 	fmt.Println("Функция-пример создания ключевого окнтейнера.")
 	Container, err := syscall.UTF16PtrFromString("user")
 	if err != nil {
@@ -40,7 +41,7 @@ func KeyGenExample() (err error) {
 		fmt.Printf("error CryptGetProvParam:%s\n", err.Error())
 		return nil
 	}
-	//fmt.Printf("Get Provider Param returned container:%s", pszUserName)
+	fmt.Printf("Get Provider Param returned container:%s", pszUserName)
 
 	var hKey win32.Handle
 	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &hKey); err != nil {
@@ -60,6 +61,5 @@ func KeyGenExample() (err error) {
 		//printf("No exchange key is available.\n");
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 	}
-	fmt.Printf("Функция-пример создания ключевого окнтейнера завершила работу.\n\n")
 	return nil
 }
