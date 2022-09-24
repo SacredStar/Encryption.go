@@ -61,7 +61,7 @@ func CryptGetHashParam(hHash Handle, dwParam DwParam, pbData *byte, pdwDataLen *
 		uintptr(hHash),
 		uintptr(dwParam),
 		uintptr(unsafe.Pointer(pbData)),
-		uintptr(unsafe.Pointer(&pdwDataLen)),
+		uintptr(unsafe.Pointer(pdwDataLen)),
 		uintptr(dwFlags)); r1 == 0 {
 		return err
 	}
