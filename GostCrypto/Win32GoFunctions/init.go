@@ -67,3 +67,23 @@ type CryptoProvider struct {
 	ProviderName string
 	ProviderType uint32
 }
+
+type CryptoapiBlob struct {
+	cbData uint32
+	pbData *byte
+}
+
+type CryptAlgorithmIdentifier struct {
+	pszObjId   string
+	Parameters CryptoapiBlob
+}
+
+type CryptEncryptMessagePara struct {
+	hCryptProv                 Handle
+	ContentEncryptionAlgorithm CryptAlgorithmIdentifier
+	cbSize                     uint32
+	dwMsgEncodingType          uint32
+	pvEncryptionAuxInfo        *uint32
+	dwFlags                    uint32
+	dwInnerContentType         uint32
+}

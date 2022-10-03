@@ -10,14 +10,11 @@ import (
 
 // CreateHashExample Пример на создание хеша
 func CreateHashExample() {
-<<<<<<< HEAD
 	//--------------------------------------------------------------------
 	// Пример создания хэша из содержимого файла. Имя файла задается в
 	// командной строке и является обязательным параметром.
 	//--------------------------------------------------------------------
 	fmt.Println("Функция-пример создания хеша")
-=======
->>>>>>> origin/master
 	//Вызываем контекст провайдера используя высокоуровневую функцию библиотеки, она соответствует CryptAccquireContext
 	//Далее опущены адекватные проверки функций DestroyHash,ReleaseContext, в проде должны быть обработаны.
 	gost, err := GostCrypto.NewGostCrypto(nil, nil, win32.ProvGost2012, win32.CRYPT_VERIFYCONTEXT)
@@ -74,37 +71,20 @@ func CreateHashExample() {
 		return
 	}
 
-<<<<<<< HEAD
 	fmt.Printf("Хеш равен:%X\n", resultHash)
-	// Освобождаем ресурсы, можно использовать проверку в анонимной функции вызываемой defer. Такой пример будет в следующей функции-примере.
-=======
-	fmt.Printf("%X", resultHash)
-	// Освобождаем ресурсы
->>>>>>> origin/master
+	// Освобождаем ресурсы, можно использовать проверку в анонимной функции вызываемой defer. Такой пример будет в следующей функции-примере
 	if err := win32.CryptDestroyHash(*gost.GetPtrToHashHandle()); err != nil {
 		fmt.Printf("ERROR:%s\n", err.Error())
 	}
 	if err := win32.CryptReleaseContext(*gost.GetPtrToProviderHandle()); err != nil {
 		fmt.Printf("ERROR:%s", err.Error())
 	}
-<<<<<<< HEAD
 	fmt.Printf("Функция-пример создания завершена.\n\n")
-}
-
-// CreateSignVerifyExample Пример на подпись объекта функции хэширования и проверку подписи
-func CreateSignVerifyExample() (err error) {
-	//--------------------------------------------------------------------
-	//В этом примере реализованы создание подписи объекта функции хэширования
-	// и проверка этой электронно-цифровой подписи.
-	//--------------------------------------------------------------------
-	fmt.Println("Функция-пример подписи и проверки.")
-=======
-
 }
 
 // CreateSignExample Пример на подпись объекта функции хэширования и проверку подписи
 func CreateSignExample() (err error) {
->>>>>>> origin/master
+	fmt.Printf("Функция-пример создания подписи. Состоит из двух этапов. Создание подписи и её проверка.\n")
 	pbBuffer := []byte("Data to be hashed and signed")
 	dwBufferLen := len(pbBuffer)
 	Container, err := syscall.UTF16PtrFromString("user")
@@ -114,8 +94,6 @@ func CreateSignExample() (err error) {
 	}
 	//CryptAcquireContext
 	gost, err := GostCrypto.NewGostCrypto(Container, nil, win32.ProvGost2012, 0)
-<<<<<<< HEAD
-
 	// Заранее освобождаем ресурсы при выходе из функции, следует использовать с осторожностью если у Вас глобальные объявления
 	defer func() {
 		if err := gost.ReleaseResources(); err != nil {
@@ -126,14 +104,12 @@ func CreateSignExample() (err error) {
 	if err != nil {
 		return err
 	}
-=======
 	if err != nil {
 		return err
 	}
 	// не забываем уничтожить хендлы...
 	defer win32.CryptDestroyHash(*gost.GetPtrToHashHandle())
 	defer win32.CryptReleaseContext(*gost.GetPtrToProviderHandle())
->>>>>>> origin/master
 	// Получение открытого ключа подписи. Этот открытый ключ будет
 	// использоваться получателем хэша для проверки подписи.
 	// В случае, когда получатель имеет доступ к открытому ключю
@@ -143,13 +119,10 @@ func CreateSignExample() (err error) {
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 		return nil
 	}
-<<<<<<< HEAD
-=======
 	//CryptGetUserKey(
 	//        hProv,
 	//        AT_SIGNATURE,
 	//        &hKey))
->>>>>>> origin/master
 	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &phKey); err != nil {
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 		return nil
@@ -158,17 +131,6 @@ func CreateSignExample() (err error) {
 	// PUBLICKEYBOLB для того, чтобы получатель подписанного хэша мог
 	// проверить подпись. Этот BLOB может быть записан в файл и передан
 	// другому пользователю.
-
-<<<<<<< HEAD
-=======
-	//CryptExportKey(
-	//        hKey,
-	//        0,
-	//        PUBLICKEYBLOB,
-	//        0,
-	//        NULL,
-	//        &dwBlobLen))
->>>>>>> origin/master
 	var dwBlobLen uint32
 	if err = win32.CryptExportKey(phKey, 0, win32.PUBLICKEYBLOB, 0, nil, &dwBlobLen); err != nil {
 		fmt.Printf("error CryptExportKey,get len Error:%s\n", err.Error())
@@ -194,11 +156,7 @@ func CreateSignExample() (err error) {
 		fmt.Printf("error CryptGetHashParam Error:%s\n", err.Error())
 		return err
 	}
-<<<<<<< HEAD
-	//cbHash = 256
-=======
 	cbHash = 256
->>>>>>> origin/master
 	var pbHash = make([]byte, cbHash)
 	if err = win32.CryptGetHashParam(*gost.GetPtrToHashHandle(), win32.HP_OID, &pbHash[0], &cbHash, 0); err != nil {
 		fmt.Printf("error CryptGetHashParam Error:%s\n", err.Error())
@@ -232,11 +190,7 @@ func CreateSignExample() (err error) {
 
 	file.Write(pbSignature)
 	file.Close()
-<<<<<<< HEAD
 	fmt.Printf("Окончание первого этапа, подпись сформирована...\n")
-=======
-	fmt.Printf("End of 1st stage of programm...\n")
->>>>>>> origin/master
 
 	// Во второй части программы проверяется подпись.
 	// Чаще всего проверка осуществляется в случае, когда различные
@@ -258,7 +212,6 @@ func CreateSignExample() (err error) {
 	// Получение откытого ключа пользователя, который создал цифровую подпись,
 	// и импортирование его в CSP с помощью функции CryptImportKey. Она
 	// возвращает дескриптор открытого ключа в hPubKey.
-<<<<<<< HEAD
 	fmt.Println("Начало второго этапа.")
 	var hPubKey win32.Handle
 	defer func() {
@@ -266,9 +219,6 @@ func CreateSignExample() (err error) {
 			panic(err)
 		}
 	}()
-=======
-	var hPubKey win32.Handle
->>>>>>> origin/master
 	if err = win32.CryptImportKey(*gost.GetPtrToProviderHandle(), &keyBlob[0], dwBlobLen, 0, 0, &hPubKey); err != nil {
 		fmt.Printf("Error CryptImportKey:%s", err.Error())
 	}
@@ -289,8 +239,7 @@ func CreateSignExample() (err error) {
 		fmt.Printf("error CryptVerifySignature Error:%s\n", err.Error())
 		return err
 	} else {
-<<<<<<< HEAD
-		fmt.Printf("Подпись проверена и сформирована верно. Функция завершила работу\n\n")
+		fmt.Printf("Функция-пример создания подписи звершила работу.Проверка подписи осуществилась успешно.\n\n")
 	}
 
 	return nil
@@ -395,10 +344,3 @@ func GetAndPrintHash(hHash win32.Handle) (hash string) {
 	}
 	return string(pbData)
 }
-=======
-		fmt.Printf("Signature is good. End programm.")
-	}
-
-	return nil
-}
->>>>>>> origin/master

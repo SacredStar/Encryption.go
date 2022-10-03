@@ -13,7 +13,6 @@ func CryptSignMessage() (err error) {
 		return err
 	}
 	return nil
-
 }
 
 //CryptVerifyMessageSignature
@@ -40,7 +39,6 @@ func CryptVerifyMessageSignature() (err error) {
 //  [in]            const BYTE * []            rgpbToBeSigned,
 //  [in]            DWORD []                   rgcbToBeSigned,
 //  [out, optional] PCCERT_CONTEXT             *ppSignerCert
-//);
 func CryptVerifyDetachedMessageSignature() (err error) {
 	if r1, _, err := procCryptVerifyDetachedMessageSignature.Call(); r1 == 0 {
 		return err
@@ -48,20 +46,20 @@ func CryptVerifyDetachedMessageSignature() (err error) {
 	return nil
 }
 
-//CryptDecodeMessage
-//[in]                DWORD                       dwMsgTypeFlags,
-//[in]                PCRYPT_DECRYPT_MESSAGE_PARA pDecryptPara,
-//[in]                PCRYPT_VERIFY_MESSAGE_PARA  pVerifyPara,
-//[in]                DWORD                       dwSignerIndex,
-//[in]                const BYTE                  *pbEncodedBlob,
-//[in]                DWORD                       cbEncodedBlob,
-//[in]                DWORD                       dwPrevInnerContentType,
-//[out, optional]     DWORD                       *pdwMsgType,
-//[out, optional]     DWORD                       *pdwInnerContentType,
-//[out, optional]     BYTE                        *pbDecoded,
-//[in, out, optional] DWORD                       *pcbDecoded,
-//[out, optional]     PCCERT_CONTEXT              *ppXchgCert,
-//[out, optional]     PCCERT_CONTEXT              *ppSignerCert
+// CryptDecodeMessage
+//  [in]                DWORD                       dwMsgTypeFlags,
+//  [in]                PCRYPT_DECRYPT_MESSAGE_PARA pDecryptPara,
+//  [in]                PCRYPT_VERIFY_MESSAGE_PARA  pVerifyPara,
+//  [in]                DWORD                       dwSignerIndex,
+//  [in]                const BYTE                  *pbEncodedBlob,
+//  [in]                DWORD                       cbEncodedBlob,
+//  [in]                DWORD                       dwPrevInnerContentType,
+//  [out, optional]     DWORD                       *pdwMsgType,
+//  [out, optional]     DWORD                       *pdwInnerContentType,
+//  [out, optional]     BYTE                        *pbDecoded,
+//  [in, out, optional] DWORD                       *pcbDecoded,
+//  [out, optional]     PCCERT_CONTEXT              *ppXchgCert,
+//  [out, optional]     PCCERT_CONTEXT              *ppSignerCert
 func CryptDecodeMessage() (err error) {
 	if r1, _, err := procCryptDecodeMessage.Call(); r1 == 0 {
 		return err
@@ -190,7 +188,6 @@ func CryptMsgCalculateEncodedLength() (err error) {
 //  [in]           void const        *pvMsgEncodeInfo,
 //  [in, optional] LPSTR             pszInnerContentObjID,
 //  [in]           PCMSG_STREAM_INFO pStreamInfo
-//);
 func CryptMsgOpenToEncode() (err error) {
 	if r1, _, err := procCryptMsgOpenToEncode.Call(); r1 == 0 {
 		return err

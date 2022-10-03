@@ -38,7 +38,7 @@ var CryptCreateHashTestSuites = []CryptCreateHashTestStruct{
 }
 
 func TestCreateHashFromData(t *testing.T) {
-	gost := GostCrypto.NewGostCrypto(win32.ProvGost2012, win32.CRYPT_VERIFYCONTEXT)
+	gost, _ := GostCrypto.NewGostCrypto(nil, nil, win32.ProvGost2012, win32.CRYPT_VERIFYCONTEXT)
 	for _, test := range CryptCreateHashTestSuites {
 		hVal, err := gost.CreateHashFromData(test.algID, []byte(test.dataToHash))
 		if err != test.expectedError {
