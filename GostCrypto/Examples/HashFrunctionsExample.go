@@ -104,18 +104,12 @@ func CreateSignExample() (err error) {
 	if err != nil {
 		return err
 	}
-	if err != nil {
-		return err
-	}
-	// не забываем уничтожить хендлы...
-	defer win32.CryptDestroyHash(*gost.GetPtrToHashHandle())
-	defer win32.CryptReleaseContext(*gost.GetPtrToProviderHandle())
 	// Получение открытого ключа подписи. Этот открытый ключ будет
 	// использоваться получателем хэша для проверки подписи.
 	// В случае, когда получатель имеет доступ к открытому ключю
 	// отправителя с помощью сертификата, этот шаг не нужен.
 	var phKey win32.Handle
-	if err := win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &phKey); err != nil {
+	if err := win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, phKey); err != nil {
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 		return nil
 	}
@@ -123,7 +117,7 @@ func CreateSignExample() (err error) {
 	//        hProv,
 	//        AT_SIGNATURE,
 	//        &hKey))
-	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &phKey); err != nil {
+	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, phKey); err != nil {
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 		return nil
 	}
