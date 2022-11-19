@@ -8,7 +8,7 @@ import (
 //  [in]  HCRYPTPROV hProv, Дескриптор криптопровайдера
 //  [in]  ALG_ID     Algid Идентификатор используемого алгоритма хэширования
 //  [in]  HCRYPTKEY  hKey =0 Если используется алгоритм имитозащиты по ГОСТ 28147-89 (CALG_G28147_IMIT), в этом параметре передаётся ключ сессии для объекта функции хэширования
-//  [in]  DWORD      dwFlags, Значения флагов. При создании объекта HMAC возможно указать флаг CP_REUSABLE_HMAC для повышения эффективности повторного использования
+//  [in]  DWORD      DwFlags, Значения флагов. При создании объекта HMAC возможно указать флаг CP_REUSABLE_HMAC для повышения эффективности повторного использования
 //  [out] HCRYPTHASH *phHash Адрес по которому функция копирует дескриптор нового объекта функции хэширования
 func CryptCreateHash(hProvider Handle, algID AlgoID, hKey Handle, hashHandle *Handle) error {
 	dwFlags := 0
@@ -27,7 +27,7 @@ func CryptCreateHash(hProvider Handle, algID AlgoID, hKey Handle, hashHandle *Ha
 //  [in] HCRYPTHASH hHash
 func CryptDestroyHash(handleHash Handle) (err error) {
 	if r1, _, err := procCryptDestroyHash.Call(
-		uintptr(handleHash)); r1 == 0 {
+		uintptr(unsafe.Pointer(handleHash))); r1 == 0 {
 		return err
 	}
 	return nil
@@ -36,7 +36,7 @@ func CryptDestroyHash(handleHash Handle) (err error) {
 // CryptDuplicateHash
 //  [in]  HCRYPTHASH hHash,
 //  [in]  DWORD      *pdwReserved = 0 Reserved for future
-//  [in]  DWORD      dwFlags =0 , Reserved for future
+//  [in]  DWORD      DwFlags =0 , Reserved for future
 //  [out] HCRYPTHASH *phHash , дескриптор нового объекта функции хэширования.
 func CryptDuplicateHash(handleHash Handle, pdwReserved *uint32, dwFlags uint32, phHash *Handle) (err error) {
 	if r1, _, err := procCryptDuplicateHash.Call(
@@ -54,7 +54,7 @@ func CryptDuplicateHash(handleHash Handle, pdwReserved *uint32, dwFlags uint32, 
 //  [in]      DWORD      dwParam, HP_ALGID,HP_HASHSIZE,HP_HASHVAL,HP_R2_SIGN,HP_R_SIGN,HP_SHAREDMODE,HP_IKE_SPI_COOKIE
 //  [out]     BYTE       *pbData, Указатель на буфер данных параметра
 //  [in, out] DWORD      *pdwDataLen Указатель на буфер, содержащий длину данных параметра.
-//  [in]      DWORD      dwFlags = 0 reserved
+//  [in]      DWORD      DwFlags = 0 reserved
 func CryptGetHashParam(hHash Handle, dwParam DwParam, pbData *byte, pdwDataLen *uint32, dwFlags uint32) (err error) {
 
 	if r1, _, err := procGetHashParam.Call(
@@ -70,9 +70,9 @@ func CryptGetHashParam(hHash Handle, dwParam DwParam, pbData *byte, pdwDataLen *
 
 //CryptHashData
 // [in] HCRYPTHASH hHash,
-// [in] BYTE *pbData, Если значение dwFlags нулевое, указатель на буфер, содержащий данные для хэширования
-// [in] DWORD      dwDataLen, Если значение dwFlags нулевое, число байтов хэшируемых данных
-// [in] DWORD      dwFlags  Значения флагов CPIOVec or 0
+// [in] BYTE *pbData, Если значение DwFlags нулевое, указатель на буфер, содержащий данные для хэширования
+// [in] DWORD      dwDataLen, Если значение DwFlags нулевое, число байтов хэшируемых данных
+// [in] DWORD      DwFlags  Значения флагов CPIOVec or 0
 func CryptHashData(hHash Handle, pbData *byte, dwDataLen uint32, dwFlags uint32) error {
 	if r1, _, err := procCryptHashData.Call(
 		uintptr(hHash),
@@ -87,7 +87,7 @@ func CryptHashData(hHash Handle, pbData *byte, dwDataLen uint32, dwFlags uint32)
 // CryptHashSessionKey
 //  [in] HCRYPTHASH hHash,
 //  [in] HCRYPTKEY  hKey,
-//  [in] DWORD      dwFlags CRYPT_LITTLE_ENDIAN or 0 //TODO: странная приписка Использование функции с dwFlags равным 0 не рекомендуется - поведение не определено.
+//  [in] DWORD      DwFlags CRYPT_LITTLE_ENDIAN or 0 //TODO: странная приписка Использование функции с DwFlags равным 0 не рекомендуется - поведение не определено.
 func CryptHashSessionKey(handleHash Handle, handleKey Handle, dwFlags CryptHashSessionKeydwParams) (err error) {
 	if r1, _, err := procCryptHashSessionKey.Call(
 		uintptr(handleHash),
@@ -102,7 +102,7 @@ func CryptHashSessionKey(handleHash Handle, handleKey Handle, dwFlags CryptHashS
 //  [in] HCRYPTHASH hHash,
 //  [in] DWORD      dwParam, HP_HASHVAL,HP_HASHSIZE....
 //  [in] const BYTE *pbData, Указатель на буфер данных параметра
-//  [in] DWORD      dwFlags =0 Reserved
+//  [in] DWORD      DwFlags =0 Reserved
 func CryptSetHashParam(handleHash Handle, param DwParam, pdData *byte, dwFlags DwParam) (err error) {
 	if r1, _, err := procCryptSetHashParam.Call(
 		uintptr(handleHash),
@@ -118,10 +118,10 @@ func CryptSetHashParam(handleHash Handle, param DwParam, pdData *byte, dwFlags D
 //  [in]      HCRYPTHASH hHash,
 //  [in]      DWORD      dwKeySpec: AT_KEYEXCHANGE or AT_SIGNATURE
 //  [in]      LPCWSTR    szDescription, /TODO: check type
-//  [in]      DWORD      dwFlags =0 ,reserved for future
+//  [in]      DWORD      DwFlags =0 ,reserved for future
 //  [out]     BYTE       *pbSignature Указатель на буфер, через который возвращается значение подписи. Если через этот параметр передаётся NULL, то подпись не вычисляется. В этом случае требуемый размер буфера (в байтах) возвращается через параметр pdwSigLen.
 //  [in, out] DWORD      *pdwSigLen Указатель на буфер, содержащий длину данных подписи
-func CryptSignHash(hHash Handle, dwKeySpecs certEnrollParams, szDescription *byte, dwFlags uint32, pbSignature *byte, pdwSigLen *uint32) (err error) {
+func CryptSignHash(hHash Handle, dwKeySpecs CertEnrollParams, szDescription *byte, dwFlags uint32, pbSignature *byte, pdwSigLen *uint32) (err error) {
 	if r1, _, err := procCryptSignHash.Call(
 		uintptr(hHash),
 		uintptr(dwKeySpecs),
@@ -140,7 +140,7 @@ func CryptSignHash(hHash Handle, dwKeySpecs certEnrollParams, szDescription *byt
 //  [in] DWORD      dwSigLen, Длина (в байтах) значения подписи.
 //  [in] HCRYPTKEY  hPubKey, Дескриптор открытого ключа проверяемой подписи.
 //  [in] LPCWSTR    szDescription, Описание подписанных данных идентичное описанию, использованному при создании подписи.
-//  [in] DWORD      dwFlags =0, reserved for future use
+//  [in] DWORD      DwFlags =0, reserved for future use
 func CryptVerifySignature(hHash Handle, pbSignature *byte, dwSiglen uint32, hPubKey Handle, szDescription *byte, dwFlags int) (err error) {
 	if r1, _, err := procCryptVerifySignature.Call(
 		uintptr(hHash),

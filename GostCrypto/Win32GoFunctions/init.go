@@ -1,12 +1,16 @@
 package win32
 
-import "syscall"
+import (
+	"syscall"
+)
 
 type Handle uintptr
 
 //Initializing libs for future usage, must use Lazy dll to prevent leaking
 var (
 	advapi32 = syscall.NewLazyDLL("advapi32.dll")
+	crypt32  = syscall.NewLazyDLL("Crypt32.dll")
+	//kernel32 = syscall.NewLazyDLL("Kernel32.dll")
 
 	// Init and provider parameters process
 	procCryptAcquireContext   = advapi32.NewProc("CryptAcquireContextW")
@@ -48,7 +52,13 @@ var (
 	procCryptMsgDuplicate                   = advapi32.NewProc("CryptMsgDuplicate")
 
 	//Other crypto process
-	procCryptEnumProviders = advapi32.NewProc("CryptEnumProvidersW")
+	procCryptEnumProviders                = advapi32.NewProc("CryptEnumProvidersW")
+	procCertOpenSystemStore               = crypt32.NewProc("CertOpenSystemStoreW")
+	procCertFindCertificateInStore        = crypt32.NewProc("CertFindCertificateInStore")
+	procCertGetCertificateContextProperty = crypt32.NewProc("CertGetCertificateContextProperty")
+	procCryptAcquireCertificatePrivateKey = crypt32.NewProc("CryptAcquireCertificatePrivateKey")
+	procCertNameToStr                     = crypt32.NewProc("CertNameToStrW")
+
 	//procCryptGetDefaultProvider = advapi32.NewProc("CryptGetDefaultProviderW")
 
 	//Hash and Sign process
@@ -61,29 +71,7 @@ var (
 	procCryptSetHashParam    = advapi32.NewProc("CryptSetHashParam")
 	procCryptSignHash        = advapi32.NewProc("CryptSignHashW")
 	procCryptVerifySignature = advapi32.NewProc("CryptVerifySignatureW")
+
+	//Utility Function
+	//procGetLastError = kernel32.NewProc("GetLastError")
 )
-
-type CryptoProvider struct {
-	ProviderName string
-	ProviderType uint32
-}
-
-type CryptoapiBlob struct {
-	cbData uint32
-	pbData *byte
-}
-
-type CryptAlgorithmIdentifier struct {
-	pszObjId   string
-	Parameters CryptoapiBlob
-}
-
-type CryptEncryptMessagePara struct {
-	hCryptProv                 Handle
-	ContentEncryptionAlgorithm CryptAlgorithmIdentifier
-	cbSize                     uint32
-	dwMsgEncodingType          uint32
-	pvEncryptionAuxInfo        *uint32
-	dwFlags                    uint32
-	dwInnerContentType         uint32
-}
