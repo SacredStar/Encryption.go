@@ -142,7 +142,7 @@ func (gost *GostCrypto) ReleaseResources() error {
 			return err
 		}
 	}
-	if gost.GetPtrToHashHandle() != nil {
+	if gost.GetPtrToProviderHandle() != nil {
 		if err := win32.CryptReleaseContext(*gost.GetPtrToProviderHandle()); err != nil {
 			return err
 		}
