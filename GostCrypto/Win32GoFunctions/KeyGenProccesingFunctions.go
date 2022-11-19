@@ -11,9 +11,9 @@ import (
 //CryptGenKey
 //[in]  HCRYPTPROV hProv,
 //[in]  ALG_ID     Algid, //TODO: need to add algs to constans.go and change algID type
-//[in]  DWORD      dwFlags,
+//[in]  DWORD      DwFlags,
 //[out] HCRYPTKEY  *phKey(handle)
-func CryptGenKey(hProv Handle, algID certEnrollParams, dwFlags GenKeyParams, keyHandle *Handle) (err error) {
+func CryptGenKey(hProv Handle, algID CertEnrollParams, dwFlags GenKeyParams, keyHandle *Handle) (err error) {
 	if r1, _, err := procCryptGenKey.Call(
 		uintptr(hProv),
 		uintptr(algID),
@@ -39,7 +39,7 @@ func CryptDestroyKey(keyHandle Handle) (err error) {
 //  [in]      HCRYPTPROV hProv,
 //  [in]      ALG_ID     Algid (symmetric encryption): CALG_G28147,CALG_TLS1_ENC_KEY,CALG_TLS1_MAC_KEY,CALG_UECSYMMETRIC CALG_UECSYMMETRIC_EPHEM CALG_G28147 TODO: need to add algs to constans.go and change algID type
 //  [in]      HCRYPTHASH hBaseData : descriptor of hasher
-//  [in]      DWORD      dwFlags GenKeyParams:CRYPT_EXPORTABLE,CRYPT_SERVER,CP_CRYPT_GETUPPERKEY
+//  [in]      DWORD      DwFlags GenKeyParams:CRYPT_EXPORTABLE,CRYPT_SERVER,CP_CRYPT_GETUPPERKEY
 //  [in, out] HCRYPTKEY  *phKey
 func CryptDeriveKey(handleProvider Handle, algID uint32, handleHash Handle, params GenKeyParams, keyHandle Handle) (err error) {
 	if r1, _, err := procCryptDeriveKey.Call(
@@ -56,7 +56,7 @@ func CryptDeriveKey(handleProvider Handle, algID uint32, handleHash Handle, para
 // CryptDuplicateKey
 //  [in]  HCRYPTKEY hKey: src
 //  [in]  DWORD     *pdwReserved = 0: reserved for future
-//  [in]  DWORD     dwFlags = 0 : reserved for future
+//  [in]  DWORD     DwFlags = 0 : reserved for future
 //  [out] HCRYPTKEY *phKey : copy
 func CryptDuplicateKey(handleKey Handle, pdwReserved uintptr, dwFlags uint32, handleKeyCopy *Handle) (err error) {
 	if r1, _, err := procCryptDuplicateKey.Call(
@@ -73,7 +73,7 @@ func CryptDuplicateKey(handleKey Handle, pdwReserved uintptr, dwFlags uint32, ha
 //[in]      HCRYPTKEY hKey,
 //[in]      HCRYPTKEY hExpKey,
 //[in]      DWORD     dwBlobType: for WL must use only PUBLICKEYBLOB param
-//[in]      DWORD     dwFlags, for WL: or CRYPT_PUBLICCOMPRESS
+//[in]      DWORD     DwFlags, for WL: or CRYPT_PUBLICCOMPRESS
 //[out]     BYTE      *pbData,
 //[in, out] DWORD     *pdwDataLen
 func CryptExportKey(handleKey Handle, hExportKey Handle, dwBlobType KeyBlobParams, dwFlags uint32, pbData *byte, pdwDataLen *uint32) (err error) {
@@ -122,7 +122,7 @@ func CryptGenRandom(hProvider Handle, dwLenBytes uint32, pbBuffer *byte) (err er
 //  [in]      DWORD     dwParam,
 //  [out]     BYTE      *pbData,
 //  [in, out] DWORD     *pdwDataLen,
-//  [in]      DWORD     dwFlags =0 : reserved for future
+//  [in]      DWORD     DwFlags =0 : reserved for future
 func CryptGetKeyParam(hKey Handle, dwParams DwParam, pdData *byte, pdwDataLen *uint32, dwFlags uint32) (err error) {
 	if r1, _, err := procCryptGetKeyParam.Call(
 		uintptr(hKey),
@@ -139,7 +139,7 @@ func CryptGetKeyParam(hKey Handle, dwParams DwParam, pdData *byte, pdwDataLen *u
 //  [in]  HCRYPTPROV hProv,
 //  [in]  DWORD      dwKeySpec, AT_KEYEXCHANGE AT_SIGNATURE
 //  [out] HCRYPTKEY  *phUserKey
-func CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handle) (err error) {
+func CryptGetUserKey(hProv Handle, dwKeySpecs CertEnrollParams, phUserKey Handle) (err error) {
 	if r1, _, err := procCryptGetUserKey.Call(
 		uintptr(hProv),
 		uintptr(dwKeySpecs),
@@ -155,7 +155,7 @@ func CryptGetUserKey(hProv Handle, dwKeySpecs certEnrollParams, phUserKey *Handl
 //  [in]  const BYTE *pbData Указатель на буфер, содержащий ключевой блоб, произведенный с иcпользованием функции CPExportKey()
 //  [in]  DWORD      dwDataLen
 //  [in]  HCRYPTKEY  hPubKey A handle to the cryptographic key that decrypts the key stored in pbData
-//  [in]  DWORD      dwFlags Значение флага. Этот параметр в настоящее время используется только, когда ключевая пара импортируется в криптопровайдер (в форме PRIVATEKEYBLOB).
+//  [in]  DWORD      DwFlags  Значение флага. Этот параметр в настоящее время используется только, когда ключевая пара импортируется в криптопровайдер (в форме PRIVATEKEYBLOB).
 //                            Если импортируемый ключ будет заново экспортироваться, в этот параметр помещается флаг CRYPT_EXPORTABLE.
 //                            Если этот флаг не используется, вызовы функции CryptExportKey в MS CryptoAPI 2.0  с дескриптором ключа будут терпеть неудачу.
 //  [out] HCRYPTKEY  *phKey  Адрес, по которому функция копирует дескриптор импортированного либо диверсифицированного ключа.
@@ -172,11 +172,11 @@ func CryptImportKey(hProv Handle, pbData *byte, dwDataLen uint32, hPubKey Handle
 	return nil
 }
 
-// CryptSetKeyParam //TODO: check is needed  [in]  HCRYPTPROV hProv?
+// CryptSetKeyParam
 //  [in] HCRYPTKEY  hKey,
 //  [in] DWORD      dwParam, WL: KP_CERTIFICATE, KP_CIPHEROID, KP_DHOID,KP_HASHOID
 //  [in] const BYTE *pbData,
-//  [in] DWORD      dwFlags = 0 reserved for future
+//  [in] DWORD      DwFlags = 0 reserved for future
 func CryptSetKeyParam(hKey Handle, param DwParam, pbData *byte, flag CryptSetProviderGetDefaultProvDWFlag) (err error) {
 	if r1, _, err := procCryptSetKeyParam.Call(
 		//uintptr(hProv),

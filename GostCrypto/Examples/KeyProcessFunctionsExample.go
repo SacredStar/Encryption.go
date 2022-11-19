@@ -21,7 +21,7 @@ func KeyGenExample() (err error) {
 		fmt.Printf("error get ptr from string")
 		return err
 	}
-	gost, err := GostCrypto.NewGostCrypto(Container, nil, win32.ProvGost2012, 0)
+	gost, err := GostCrypto.NewGostCrypto(Container, nil, win32.ProvGost2012_512, 0)
 	if err != nil {
 		gost, err = GostCrypto.NewGostCrypto(Container, nil, win32.ProvGost2012, win32.CRYPT_NEWKEYSET)
 		if err != nil {
@@ -44,7 +44,7 @@ func KeyGenExample() (err error) {
 	fmt.Printf("Имя полученного контейнера:%s\n", pszUserName)
 
 	var hKey win32.Handle
-	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &hKey); err != nil {
+	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, hKey); err != nil {
 		if err == syscall.Errno(win32.NTE_NO_KEY) {
 			// Создание подписанной ключевой пары.
 			fmt.Println("The signature key does not exist.")
@@ -57,7 +57,7 @@ func KeyGenExample() (err error) {
 	}
 
 	// Получение ключа обмена: AT_KEYEXCHANGE
-	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &hKey); err != nil {
+	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, hKey); err != nil {
 		//printf("No exchange key is available.\n");
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 	}

@@ -6,8 +6,8 @@ import "unsafe"
 //  [out] HCRYPTPROV *phProv,
 //  [in]  LPCWSTR    szContainer,
 //  [in]  LPCWSTR    szProvider,
-//  [in]  DWORD      dwProvType,
-//  [in]  DWORD      dwFlags
+//  [in]  DWORD      DwProvType,
+//  [in]  DWORD      DwFlags
 func CryptAcquireContext(provHandle *Handle, container *uint16, provider *uint16, provType ProvType, flags CryptAcquireContextDWFlagsParams) (err error) {
 	if r1, _, err := procCryptAcquireContext.Call(
 		uintptr(unsafe.Pointer(provHandle)),
@@ -22,7 +22,7 @@ func CryptAcquireContext(provHandle *Handle, container *uint16, provider *uint16
 
 // CryptReleaseContext
 //  [in] HCRYPTPROV hProv,
-//  [in] DWORD      dwFlags = 0 ( dwFlags not used for now, stub for future in CSP
+//  [in] DWORD      DwFlags = 0 ( DwFlags not used for now, stub for future in CSP
 func CryptReleaseContext(provHandle Handle) (err error) {
 	if r1, _, err := procCryptReleaseContext.Call(
 		uintptr(provHandle),
@@ -36,7 +36,7 @@ func CryptReleaseContext(provHandle Handle) (err error) {
 //  [in] HCRYPTPROV hProv,
 //  [in] DWORD      dwParam,
 //  [in] const BYTE *pbData,
-//  [in] DWORD      dwFlags
+//  [in] DWORD      DwFlags
 func CryptSetProvParam(provHandle Handle, dwParam GetSetProviderParams, pbData *byte, dwFlags uint32) (err error) {
 	if r1, _, err := procCryptSetProviderParam.Call(
 		uintptr(provHandle),
@@ -53,7 +53,7 @@ func CryptSetProvParam(provHandle Handle, dwParam GetSetProviderParams, pbData *
 //  [in]      DWORD      dwParam,
 //  [out]     BYTE       *pbData,
 //  [in, out] DWORD      *pdwDataLen,
-//  [in]      DWORD      dwFlags
+//  [in]      DWORD      DwFlags
 func CryptGetProvParam(provHandle Handle, dwParam GetSetProviderParams, pbData *byte, pdwDataLen *uint32, dwFlags uint32) (err error) {
 	if r1, _, err := procCryptGetProviderParam.Call(
 		uintptr(provHandle),
