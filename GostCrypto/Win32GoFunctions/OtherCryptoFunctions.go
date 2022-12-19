@@ -29,10 +29,10 @@ func CryptEnumProviders(dwIndex uint32, pdwReserved *uint32, dwFlags uint32, pdw
 // CertOpenSystemStore
 //  [in] HCRYPTPROV_LEGACY hProv ,
 //  [in] LPCWSTR           szSubsystemProtocol Строка, именующая системное хранилище
-func CertOpenSystemStore(hProv Handle, szSubsystemProtocol string) (HSystemStore Handle, err error) {
+func CertOpenSystemStore(hProv Handle, szSubsystemProtocol *uint16) (HSystemStore Handle, err error) {
 	r1, _, err := procCertOpenSystemStore.Call(
 		uintptr(hProv),
-		uintptr(unsafe.Pointer(&szSubsystemProtocol)))
+		uintptr(unsafe.Pointer(szSubsystemProtocol)))
 	if r1 == 0 {
 		return Handle(0), err
 	} else {
@@ -71,11 +71,11 @@ func CertFindCertificateInStore(store Handle, dwCertEncodingType uint32, dwFindF
 //  [in]      DWORD          dwPropId,
 //  [out]     void           *pvData,
 //  [in, out] DWORD          *pcbData
-func CertGetCertificateContextProperty(Certctx PCertContext, dwPropId uint32, pvData Handle, pcbData *uint32) (err error) {
+func CertGetCertificateContextProperty(Certctx PCertContext, dwPropId uint32, pvData *Handle, pcbData *uint32) (err error) {
 	r1, _, err := procCertGetCertificateContextProperty.Call(
 		uintptr(unsafe.Pointer(Certctx)),
 		uintptr(dwPropId),
-		uintptr(pvData),
+		uintptr(unsafe.Pointer(pvData)),
 		uintptr(unsafe.Pointer(pcbData)),
 	)
 	if r1 == 0 {
@@ -114,7 +114,7 @@ func CryptAcquireCertificatePrivateKey(pCert PCertContext, dwFlags uint32, pvPar
 //  [in]  DWORD           dwStrType, This parameter specifies the format of the output string
 //  [out] LPWSTR          psz, A pointer to a character buffer that receives the returned string
 //  [in]  DWORD           csz The size, in characters, of the psz buffer. The size must include the terminating null character.
-func CertNameToStr(dwCertEncodingType uint32, pName PcertNameBlob, dwStrType uint32, psz *byte, csz uint32) (NumOfChars uintptr, err error) {
+func CertNameToStr(dwCertEncodingType uint32, pName PcertNameBlob, dwStrType uint32, psz *uint16, csz uint32) (NumOfChars uintptr, err error) {
 	r1, _, err := procCertNameToStr.Call(
 		uintptr(dwCertEncodingType),
 		uintptr(unsafe.Pointer(pName)),

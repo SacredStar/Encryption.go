@@ -77,7 +77,7 @@ type CryptBitBlob struct {
 }
 
 type CryptAlgorithmIdentifier struct {
-	ObjId      *byte
+	ObjId      *uint16
 	Parameters CryptObjidBlob
 }
 
@@ -92,7 +92,7 @@ type (
 )
 
 type CertExtension struct {
-	pszObjId  uintptr
+	pszObjId  *byte
 	fCritical bool
 	Value     CryptObjidBlob
 }
@@ -118,14 +118,12 @@ type CertInfo struct {
 
 type PCertInfo *CertInfo
 
-type HCertStore Handle
-
 type CertContext struct {
 	DwCertEncodingType uint32
 	PbCertEncoded      *byte
 	CbCertEncoded      uint32
 	PCertInfo          PCertInfo
-	HCERTSTORE         HCertStore
+	HCERTSTORE         Handle
 }
 
 type PCertContext *CertContext
@@ -149,7 +147,7 @@ type CryptEncryptMessagePara struct {
 	ContentEncryptionAlgorithm CryptAlgorithmIdentifier
 	CbSize                     uint32
 	DwMsgEncodingType          uint32
-	PvEncryptionAuxInfo        *uint32
+	PvEncryptionAuxInfo        Handle //*void
 	DwFlags                    uint32
 	DwInnerContentType         uint32
 }
@@ -165,8 +163,8 @@ type CryptKeyProvParam struct {
 type PCryptKeyProvParam *CryptKeyProvParam
 
 type CryptKeyProvInfo struct {
-	PwszContainerName uintptr
-	PwszProvName      uintptr
+	PwszContainerName *byte
+	PwszProvName      *byte
 	DwProvType        uint32
 	DwFlags           uint32
 	CProvParam        uint32

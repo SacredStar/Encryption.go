@@ -35,8 +35,6 @@ var (
 	procCryptVerifyMessageSignature         = advapi32.NewProc("CryptVerifyMessageSignature")
 	procCryptVerifyDetachedMessageSignature = advapi32.NewProc("CryptVerifyDetachedMessageSignature")
 	procCryptDecodeMessage                  = advapi32.NewProc("CryptDecodeMessage")
-	procCryptEncryptMessage                 = advapi32.NewProc("CryptEncryptMessage")
-	procCryptDecryptMessage                 = advapi32.NewProc("CryptDecryptMessage")
 	procCryptGetMessageCertificates         = advapi32.NewProc("CryptGetMessageCertificates")
 	procCryptGetMessageSignerCount          = advapi32.NewProc("CryptGetMessageSignerCount")
 	procCryptHashMessage                    = advapi32.NewProc("CryptHashMessage")
@@ -50,6 +48,8 @@ var (
 	procCryptMsgControl                     = advapi32.NewProc("CryptMsgControl")
 	procCryptMsgClose                       = advapi32.NewProc("CryptMsgClose")
 	procCryptMsgDuplicate                   = advapi32.NewProc("CryptMsgDuplicate")
+	procCryptEncryptMessage                 = crypt32.NewProc("CryptEncryptMessage")
+	procCryptDecryptMessage                 = crypt32.NewProc("CryptDecryptMessage")
 
 	//Other crypto process
 	procCryptEnumProviders                = advapi32.NewProc("CryptEnumProvidersW")
