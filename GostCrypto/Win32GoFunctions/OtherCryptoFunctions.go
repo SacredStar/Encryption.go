@@ -49,7 +49,7 @@ func CertOpenSystemStore(hProv Handle, szSubsystemProtocol *uint16) (HSystemStor
 //  [in] DWORD          dwFindType, Specifies the type of search being made
 //  [in] const void     *pvFindPara,
 //  [in] PCCERT_CONTEXT pPrevCertContext
-func CertFindCertificateInStore(store Handle, dwCertEncodingType uint32, dwFindFlags uint32, dwFindType uint32, pvFindPara Handle, pPrevCertContext PCertContext) (CertCtx *CertContext, err error) {
+func CertFindCertificateInStore(store Handle, dwCertEncodingType uint32, dwFindFlags uint32, dwFindType uint32, pvFindPara unsafe.Pointer, pPrevCertContext PCertContext) (CertCtx *CertContext, err error) {
 	r1, _, err := procCertFindCertificateInStore.Call(
 		uintptr(store),
 		uintptr(dwCertEncodingType),
@@ -71,11 +71,11 @@ func CertFindCertificateInStore(store Handle, dwCertEncodingType uint32, dwFindF
 //  [in]      DWORD          dwPropId,
 //  [out]     void           *pvData,
 //  [in, out] DWORD          *pcbData
-func CertGetCertificateContextProperty(Certctx PCertContext, dwPropId uint32, pvData *Handle, pcbData *uint32) (err error) {
+func CertGetCertificateContextProperty(Certctx PCertContext, dwPropId uint32, pvData unsafe.Pointer, pcbData *uint32) (err error) {
 	r1, _, err := procCertGetCertificateContextProperty.Call(
 		uintptr(unsafe.Pointer(Certctx)),
 		uintptr(dwPropId),
-		uintptr(unsafe.Pointer(pvData)),
+		uintptr(pvData),
 		uintptr(unsafe.Pointer(pcbData)),
 	)
 	if r1 == 0 {
@@ -92,12 +92,12 @@ func CertGetCertificateContextProperty(Certctx PCertContext, dwPropId uint32, pv
 //  [out]          HCRYPTPROV_OR_NCRYPT_KEY_HANDLE *phCryptProvOrNCryptKey, Currently work only with HCryptProv
 //  [out]          DWORD                           *pdwKeySpec,
 //  [out]          BOOL                            *pfCallerFreeProvOrNCryptKey Currently work only with freeprov
-func CryptAcquireCertificatePrivateKey(pCert PCertContext, dwFlags uint32, pvParameters Handle, phCryptProvOrNCryptKey Handle, pdwKeySpec *uint32, pfCallerFreeProvOrNCryptKey *bool) (err error) {
+func CryptAcquireCertificatePrivateKey(pCert PCertContext, dwFlags uint32, pvParameters unsafe.Pointer, phCryptProvOrNCryptKey *Handle, pdwKeySpec *uint32, pfCallerFreeProvOrNCryptKey *bool) (err error) {
 	r1, _, err := procCryptAcquireCertificatePrivateKey.Call(
 		uintptr(unsafe.Pointer(pCert)),
 		uintptr(dwFlags),
 		uintptr(pvParameters),
-		uintptr(phCryptProvOrNCryptKey),
+		uintptr(unsafe.Pointer(phCryptProvOrNCryptKey)),
 		uintptr(unsafe.Pointer(pdwKeySpec)),
 		uintptr(unsafe.Pointer(pfCallerFreeProvOrNCryptKey)),
 	)
