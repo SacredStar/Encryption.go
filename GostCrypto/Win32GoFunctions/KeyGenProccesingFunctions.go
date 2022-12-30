@@ -139,7 +139,7 @@ func CryptGetKeyParam(hKey Handle, dwParams DwParam, pdData *byte, pdwDataLen *u
 //  [in]  HCRYPTPROV hProv,
 //  [in]  DWORD      dwKeySpec, AT_KEYEXCHANGE AT_SIGNATURE
 //  [out] HCRYPTKEY  *phUserKey
-func CryptGetUserKey(hProv Handle, dwKeySpecs CertEnrollParams, phUserKey Handle) (err error) {
+func CryptGetUserKey(hProv Handle, dwKeySpecs CertEnrollParams, phUserKey *Handle) (err error) {
 	if r1, _, err := procCryptGetUserKey.Call(
 		uintptr(hProv),
 		uintptr(dwKeySpecs),
