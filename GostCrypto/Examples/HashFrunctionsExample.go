@@ -109,7 +109,7 @@ func CreateSignExample() (err error) {
 	// В случае, когда получатель имеет доступ к открытому ключю
 	// отправителя с помощью сертификата, этот шаг не нужен.
 	var phKey win32.Handle
-	if err := win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, phKey); err != nil {
+	if err := win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &phKey); err != nil {
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 		return nil
 	}
@@ -117,7 +117,7 @@ func CreateSignExample() (err error) {
 	//        hProv,
 	//        AT_SIGNATURE,
 	//        &hKey))
-	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, phKey); err != nil {
+	if err = win32.CryptGetUserKey(*gost.GetPtrToProviderHandle(), win32.AT_SIGNATURE, &phKey); err != nil {
 		fmt.Printf("error CryptGetUserKey:%s\n", err.Error())
 		return nil
 	}
