@@ -1,5 +1,7 @@
 package win32
 
+import "unsafe"
+
 type CryptoProvider struct {
 	ProviderName string
 	ProviderType uint32
@@ -10,12 +12,31 @@ type CryptoapiBlob struct {
 	pbData *byte
 }
 
+//type LPWSTR unsafe.Pointer
+type BYTE *byte
+
+/*CryptSignMessagePara {
+  DWORD                       cbSize;
+  DWORD                       dwMsgEncodingType;
+  PCCERT_CONTEXT              pSigningCert;
+  CRYPT_ALGORITHM_IDENTIFIER  HashAlgorithm;
+  void                        *pvHashAuxInfo;
+  DWORD                       cMsgCert;
+  PCCERT_CONTEXT              *rgpMsgCert;
+  DWORD                       cMsgCrl;
+  PCCRL_CONTEXT               *rgpMsgCrl;
+  DWORD                       cAuthAttr;
+  PCRYPT_ATTRIBUTE            rgAuthAttr;
+  DWORD                       cUnauthAttr;
+  PCRYPT_ATTRIBUTE            rgUnauthAttr;
+  DWORD                       dwFlags;
+  DWORD                       dwInnerContentType;*/
 type CryptSignMessagePara struct {
 	cbSize             uint32
 	dwMsgEncodingType  uint32
 	pSigningCert       PCertContext
 	HashAlgorithm      CryptAlgorithmIdentifier
-	pvHashAuxInfo      *uintptr
+	pvHashAuxInfo      unsafe.Pointer
 	cMsgCert           uint32
 	rgpMsgCert         PCertContext
 	cMsgCrl            uint32
@@ -77,7 +98,7 @@ type CryptBitBlob struct {
 }
 
 type CryptAlgorithmIdentifier struct {
-	ObjId      *uint16
+	ObjId      *byte
 	Parameters CryptObjidBlob
 }
 
@@ -92,8 +113,8 @@ type (
 )
 
 type CertExtension struct {
-	pszObjId  *byte
-	fCritical bool
+	pszObjId  *uint16
+	fCritical int32
 	Value     CryptObjidBlob
 }
 
@@ -147,7 +168,7 @@ type CryptEncryptMessagePara struct {
 	ContentEncryptionAlgorithm CryptAlgorithmIdentifier
 	CbSize                     uint32
 	DwMsgEncodingType          uint32
-	PvEncryptionAuxInfo        Handle //*void
+	PvEncryptionAuxInfo        unsafe.Pointer //*void
 	DwFlags                    uint32
 	DwInnerContentType         uint32
 }
@@ -163,12 +184,12 @@ type CryptKeyProvParam struct {
 type PCryptKeyProvParam *CryptKeyProvParam
 
 type CryptKeyProvInfo struct {
-	PwszContainerName *byte
-	PwszProvName      *byte
+	PwszContainerName *uint16
+	PwszProvName      *uint16
 	DwProvType        uint32
 	DwFlags           uint32
 	CProvParam        uint32
-	RgProvParam       CryptKeyProvParam
+	RgProvParam       PCryptKeyProvParam
 	DwKeySpec         uint32
 }
 type PCryptKeyProvInfo *CryptKeyProvInfo
