@@ -249,13 +249,13 @@ const (
 	//Средства электронной подписи и УЦ издателя
 	SzCPOID_IssuerSignTool = "1.2.643.100.112"
 
-	// OIDs for signing certificate attributes
+	//OIDs for signing certificate attributes
 	//Группа атрибутов для хранения идентификатора сертификата ключа подписи
 	SzCPOID_RSA_SMIMEaaSigningCertificate   = "1.2.840.113549.1.9.16.2.12"
 	SzCPOID_RSA_SMIMEaaSigningCertificateV2 = "1.2.840.113549.1.9.16.2.47"
 	SzCPOID_RSA_SMIMEaaETSotherSigCert      = "1.2.840.113549.1.9.16.2.19"
 
-	//  GUIDs for extending CryptEncodeObject/CryptDecodeObject functionality
+	// GUIDs for extending CryptEncodeObject/CryptDecodeObject functionality
 	//   Набор уникальных идентификаторов, используемых для расширения функциональности
 	//   функций  CryptEncodeObject/CryptDecodeObject
 	SzCPGUID_RSA_SMIMEaaSigningCertificateEncode   = "{272ED084-4C55-42A9-AD88-A1502D9ED755}"
