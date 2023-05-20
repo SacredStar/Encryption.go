@@ -68,20 +68,20 @@ func EncryptDecryptMsgExample() {
 	// Инициализация структуры CryptAlgorithmIdentifier с нулем.
 	//var EncryptAlgorithm win32.CryptAlgorithmIdentifier
 	//GostCrypto.MemSet(unsafe.Pointer(&EncryptAlgorithm), 0, unsafe.Sizeof(win32.CryptAlgorithmIdentifier{}))
-	ptrObjID, err := GostCrypto.UTF16PtrFromString(win32.SzOID_CP_GOST_28147)
-	if err != nil {
-		fmt.Println("error converting string to ptr")
-		return
-	}
+	//ptrObjID, err := GostCrypto.UTF16PtrFromString(win32.SzOID_CP_GOST_28147)
+	//if err != nil {
+	//	fmt.Println("error converting string to ptr")
+	//	return
+	//}
 	//EncryptAlgorithm.ObjId = ptrObjID
 
 	// Инициализация структуры CRYPT_ENCRYPT_MESSAGE_PARA.
 	var EncryptParams win32.CryptEncryptMessagePara
 	GostCrypto.MemSet(unsafe.Pointer(&EncryptParams), 0, unsafe.Sizeof(win32.CryptEncryptMessagePara{}))
 	EncryptParams.CbSize = uint32(unsafe.Sizeof(win32.CryptEncryptMessagePara{}))
-	EncryptParams.DwMsgEncodingType = win32.PKCS_7_ASN_ENCODING | win32.X509_ASN_ENCODING
-	EncryptParams.ContentEncryptionAlgorithm.ObjId = (*byte)(unsafe.Pointer(ptrObjID))
-	EncryptParams.HCryptProv = *gost.GetPtrToProviderHandle()
+	EncryptParams.DwMsgEncodingType = win32.PKCS_7_ASN_ENCODING
+	EncryptParams.ContentEncryptionAlgorithm.ObjId = unsafe.StringData(win32.SzOID_CP_GOST_28147)
+	EncryptParams.HCryptProv = gost.GetPtrToProviderHandle()
 	//EncryptParams.ContentEncryptionAlgorithm = EncryptAlgorithm
 	EncryptParams.DwFlags = 0
 	EncryptParams.DwInnerContentType = 0
@@ -93,10 +93,11 @@ func EncryptDecryptMsgExample() {
 	pRecipientCertSlice = append(pRecipientCertSlice, pRecipientCert)
 	var pbEncryptedBlob *byte
 	//ptrbContent, _ := GostCrypto.UTF16PtrFromString(pbContent)
-	pbContent1 := []byte("Security is our business")
-	cbContent1 := uint32(len(pbContent)) // Длина сообщения, включая конечный 0
+	pbContent1 := unsafe.StringData("Security is our business")
+	cbContent1 := uint32(len("Security is our business")) // Длина сообщения, включая конечный 0
 	//var EncBlob byte
-	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, &pbContent1[0], cbContent1, nil, &cbEncryptedBlob); err != nil {
+	//TODO: fix this shit
+	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, pbContent1, cbContent1, nil, &cbEncryptedBlob); err != nil {
 		fmt.Printf("error CryptEncryptMessage function 1st usage:%s", err.Error())
 		return
 	}
@@ -104,7 +105,7 @@ func EncryptDecryptMsgExample() {
 	// Распределение памяти под возвращаемый BLOB.
 	//var pbEncryptedBlob *byte
 	// Повторный вызов функции CryptEncryptMessage для зашифрования содержимого.
-	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, &pbContent1[0], cbContent1, pbEncryptedBlob, &cbEncryptedBlob); err != nil {
+	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, pbContent1, cbContent1, pbEncryptedBlob, &cbEncryptedBlob); err != nil {
 		fmt.Printf("error CryptEncryptMessage function 2nd usage - Encryption Failed")
 		return
 	}
@@ -122,7 +123,7 @@ func GetRecipientCert(hCertStore win32.Handle) win32.PCertContext {
 	var dwSize uint32
 	//var pKeyInfo win32.PCryptKeyProvInfo
 
-	//PropId := win32.CERT_KEY_PROV_INFO_PROP_ID
+	PropId := win32.CERT_KEY_PROV_INFO_PROP_ID
 	var hProv win32.Handle
 
 	if hCertStore == 0 {
@@ -136,8 +137,7 @@ func GetRecipientCert(hCertStore win32.Handle) win32.PCertContext {
 		var MyEncodingType = win32.PKCS_7_ASN_ENCODING | win32.X509_ASN_ENCODING
 		var pCertContext win32.PCertContext
 
-		pCertContext, _ = win32.CertFindCertificateInStore(hCertStore, uint32(MyEncodingType), 0, win32.CERT_FIND_ANY, nil, nil)
-
+		pCertContext, _ = win32.CertFindCertificateInStore(hCertStore, uint32(MyEncodingType), 0, uint32(PropId), nil, nil)
 		if pCertContext == nil {
 			break
 		}
@@ -163,7 +163,7 @@ func GetRecipientCert(hCertStore win32.Handle) win32.PCertContext {
 		// Получение структуры информации о ключе.
 		if err := win32.CertGetCertificateContextProperty(pCertContext, win32.CERT_KEY_PROV_INFO_PROP_ID, pKeyInfoPointer, &dwSize); err != nil {
 			fmt.Println("the second call CertGetCertificateContextProperty failed")
-			return nil
+			continue
 		}
 
 		pKeyProvInfo := (*win32.CryptKeyProvInfo)(pKeyInfoPointer)
@@ -179,20 +179,19 @@ func GetRecipientCert(hCertStore win32.Handle) win32.PCertContext {
 			//-------------------------------------------
 			//попробуем открыть провайдер
 			fFreeProv := false
-			var CryptProv win32.Handle
-			if err := win32.CryptAcquireCertificatePrivateKey(pCertContext, win32.CRYPT_ACQUIRE_COMPARE_KEY_FLAG, nil, &CryptProv, &pKeyProvInfo.DwKeySpec, &fFreeProv); err != nil {
+			if err := win32.CryptAcquireCertificatePrivateKey(pCertContext, win32.CRYPT_ACQUIRE_COMPARE_KEY_FLAG, nil, &hProv, &pKeyProvInfo.DwKeySpec, &fFreeProv); err == nil {
 				DwKeySpecCertEnroll := pKeyProvInfo.DwKeySpec
-				if err := win32.CryptGetUserKey(hProv, win32.CertEnrollParams(DwKeySpecCertEnroll), &hKey); err != nil {
+				if win32.CryptGetUserKey(hProv, win32.CertEnrollParams(DwKeySpecCertEnroll), &hKey) == nil {
 					bCertNotFind = false
-					if err := win32.CryptDestroyKey(hKey); err != nil {
+					if win32.CryptDestroyKey(hKey) != nil {
 						fmt.Printf("Error while destroing Key")
-						return nil
+						continue
 					}
 				}
 			}
 		}
 		// TODO: check PcertContext
-		if bCertNotFind && pCertContext != nil {
+		if !bCertNotFind && pCertContext != nil {
 			return pCertContext
 		}
 	}

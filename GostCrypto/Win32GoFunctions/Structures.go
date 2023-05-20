@@ -7,30 +7,32 @@ type CryptoProvider struct {
 	ProviderType uint32
 }
 
-type CryptoapiBlob struct {
+type CryptoApiBlob struct {
 	cbData uint32
 	pbData *byte
 }
 
-//type LPWSTR unsafe.Pointer
+// type LPWSTR unsafe.Pointer
 type BYTE *byte
 
-/*CryptSignMessagePara {
-  DWORD                       cbSize;
-  DWORD                       dwMsgEncodingType;
-  PCCERT_CONTEXT              pSigningCert;
-  CRYPT_ALGORITHM_IDENTIFIER  HashAlgorithm;
-  void                        *pvHashAuxInfo;
-  DWORD                       cMsgCert;
-  PCCERT_CONTEXT              *rgpMsgCert;
-  DWORD                       cMsgCrl;
-  PCCRL_CONTEXT               *rgpMsgCrl;
-  DWORD                       cAuthAttr;
-  PCRYPT_ATTRIBUTE            rgAuthAttr;
-  DWORD                       cUnauthAttr;
-  PCRYPT_ATTRIBUTE            rgUnauthAttr;
-  DWORD                       dwFlags;
-  DWORD                       dwInnerContentType;*/
+/*
+	CryptSignMessagePara {
+	  DWORD                       cbSize;
+	  DWORD                       dwMsgEncodingType;
+	  PCCERT_CONTEXT              pSigningCert;
+	  CRYPT_ALGORITHM_IDENTIFIER  HashAlgorithm;
+	  void                        *pvHashAuxInfo;
+	  DWORD                       cMsgCert;
+	  PCCERT_CONTEXT              *rgpMsgCert;
+	  DWORD                       cMsgCrl;
+	  PCCRL_CONTEXT               *rgpMsgCrl;
+	  DWORD                       cAuthAttr;
+	  PCRYPT_ATTRIBUTE            rgAuthAttr;
+	  DWORD                       cUnauthAttr;
+	  PCRYPT_ATTRIBUTE            rgUnauthAttr;
+	  DWORD                       dwFlags;
+	  DWORD                       dwInnerContentType;
+*/
 type CryptSignMessagePara struct {
 	cbSize             uint32
 	dwMsgEncodingType  uint32
@@ -51,38 +53,33 @@ type CryptSignMessagePara struct {
 
 type PCryptSignMessagePara CryptSignMessagePara
 
-type cryptoapiBlob struct {
-	cbData uint32
-	pbData *byte
-}
-
 type (
-	CertNameBlob      cryptoapiBlob
-	CryptIntegerBlob  cryptoapiBlob
-	IntegerBlob       cryptoapiBlob
+	CertNameBlob      CryptoApiBlob
+	CryptIntegerBlob  CryptoApiBlob
+	IntegerBlob       CryptoApiBlob
 	PcryptIntegerBlob *IntegerBlob
-	CryptUintBlob     cryptoapiBlob
+	CryptUintBlob     CryptoApiBlob
 	PcryptUintBlob    *CryptUintBlob
-	CryptObjidBlob    cryptoapiBlob
+	CryptObjidBlob    CryptoApiBlob
 	PcryptObjidBlob   *CryptObjidBlob
 	PcertNameBlob     *CertNameBlob
-	CertRdnValueBlob  cryptoapiBlob
-	PcertRdnValueBlob *cryptoapiBlob
-	CertBlob          cryptoapiBlob
+	CertRdnValueBlob  CryptoApiBlob
+	PcertRdnValueBlob *CryptoApiBlob
+	CertBlob          CryptoApiBlob
 	PcertBlob         *CertBlob
-	CrlBlob           cryptoapiBlob
+	CrlBlob           CryptoApiBlob
 	PcrlBlob          *CrlBlob
-	DataBlob          cryptoapiBlob
+	DataBlob          CryptoApiBlob
 	PdataBlob         *DataBlob
-	CryptDataBlob     cryptoapiBlob
+	CryptDataBlob     CryptoApiBlob
 	PcryptDataBlob    *CryptDataBlob
-	CryptHashBlob     cryptoapiBlob
+	CryptHashBlob     CryptoApiBlob
 	PcryptHashBlob    *CryptHashBlob
-	CryptDigestBlob   cryptoapiBlob
+	CryptDigestBlob   CryptoApiBlob
 	PcryptDigestBlob  *CryptDigestBlob
-	CryptDerBlob      cryptoapiBlob
+	CryptDerBlob      CryptoApiBlob
 	PcryptDerBlob     *CryptDerBlob
-	CryptAttrBlob     cryptoapiBlob
+	CryptAttrBlob     CryptoApiBlob
 	PcryptAttrBlob    *CryptAttrBlob
 )
 
@@ -164,7 +161,7 @@ type CryptSignMessageParaCmsField struct {
 }
 
 type CryptEncryptMessagePara struct {
-	HCryptProv                 Handle
+	HCryptProv                 *Handle
 	ContentEncryptionAlgorithm CryptAlgorithmIdentifier
 	CbSize                     uint32
 	DwMsgEncodingType          uint32
