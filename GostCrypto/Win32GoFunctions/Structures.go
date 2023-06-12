@@ -1,6 +1,8 @@
 package win32
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type CryptoProvider struct {
 	ProviderName string
@@ -8,8 +10,8 @@ type CryptoProvider struct {
 }
 
 type CryptoApiBlob struct {
-	cbData uint32
-	pbData *byte
+	CbData uint32
+	PbData *byte
 }
 
 // type LPWSTR unsafe.Pointer
@@ -161,13 +163,14 @@ type CryptSignMessageParaCmsField struct {
 }
 
 type CryptEncryptMessagePara struct {
-	HCryptProv                 *Handle
-	ContentEncryptionAlgorithm CryptAlgorithmIdentifier
 	CbSize                     uint32
 	DwMsgEncodingType          uint32
-	PvEncryptionAuxInfo        unsafe.Pointer //*void
-	DwFlags                    uint32
-	DwInnerContentType         uint32
+	HCryptProv                 *Handle
+	ContentEncryptionAlgorithm CryptAlgorithmIdentifier //syscall.CRYPT_ALGORITHM_IDENTIFIER
+
+	PvEncryptionAuxInfo uintptr //*void
+	DwFlags             uint32
+	DwInnerContentType  uint32
 }
 
 type PCryptEncryptMessagePara *CryptEncryptMessagePara

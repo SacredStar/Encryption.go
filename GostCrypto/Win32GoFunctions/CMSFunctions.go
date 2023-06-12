@@ -86,7 +86,7 @@ func CryptDecodeMessage() (err error) {
 //	[in, out] DWORD                       *pcbEncryptedBlob
 func CryptEncryptMessage(PMessagePara PCryptEncryptMessagePara, cRecipientCert uint32, rgpRecipientCert PCertContext, pbToBeEncrypt *byte, cbToBeEncrypt uint32, pbEncryptBlob *byte, pcbEncryptedBlob *uint32) (err error) {
 	if r1, _, err := procCryptEncryptMessage.Call(
-		uintptr(unsafe.Pointer(PMessagePara)),
+		uintptr(unsafe.Pointer(&PMessagePara)),
 		uintptr(cRecipientCert),
 		uintptr(unsafe.Pointer(&rgpRecipientCert)),
 		uintptr(unsafe.Pointer(&pbToBeEncrypt)),

@@ -19,12 +19,6 @@ func EncryptDecryptMsgExample() {
 	// сообщение, которое будет зашифровано. В данном коде создается сообщение,
 	// получается указатель на него.
 
-	pbContent := string("Security is our business")
-	cbContent := uint32(len(pbContent)) // Длина сообщения, включая конечный 0
-
-	fmt.Printf("source message: %s\n", pbContent)
-	fmt.Printf("message length: %d bytes \n", cbContent)
-
 	// Получение дескриптора криптографического провайдера.
 	gost, err := GostCrypto.NewGostCrypto(nil, nil, win32.ProvGost2012, win32.CRYPT_VERIFYCONTEXT)
 	if err != nil {
@@ -58,60 +52,37 @@ func EncryptDecryptMsgExample() {
 		fmt.Printf("CrypteEncryptMessage and CryptDecryptMessage.\n\n")
 		return
 	}
-	szDName, err := GetCertDName(&pRecipientCert.PCertInfo.Subject)
-	if err != nil {
-		fmt.Printf(err.Error())
-		return
-	}
-	fmt.Printf("A recipient's certificate has been acquired: %s\n", szDName)
-
-	// Инициализация структуры CryptAlgorithmIdentifier с нулем.
-	//var EncryptAlgorithm win32.CryptAlgorithmIdentifier
-	//GostCrypto.MemSet(unsafe.Pointer(&EncryptAlgorithm), 0, unsafe.Sizeof(win32.CryptAlgorithmIdentifier{}))
-	//ptrObjID, err := GostCrypto.UTF16PtrFromString(win32.SzOID_CP_GOST_28147)
-	//if err != nil {
-	//	fmt.Println("error converting string to ptr")
-	//	return
-	//}
-	//EncryptAlgorithm.ObjId = ptrObjID
 
 	// Инициализация структуры CRYPT_ENCRYPT_MESSAGE_PARA.
-	var EncryptParams win32.CryptEncryptMessagePara
-	GostCrypto.MemSet(unsafe.Pointer(&EncryptParams), 0, unsafe.Sizeof(win32.CryptEncryptMessagePara{}))
-	EncryptParams.CbSize = uint32(unsafe.Sizeof(win32.CryptEncryptMessagePara{}))
-	EncryptParams.DwMsgEncodingType = win32.PKCS_7_ASN_ENCODING
-	EncryptParams.ContentEncryptionAlgorithm.ObjId = unsafe.StringData(win32.SzOID_CP_GOST_28147)
-	EncryptParams.HCryptProv = gost.GetPtrToProviderHandle()
-	//EncryptParams.ContentEncryptionAlgorithm = EncryptAlgorithm
-	EncryptParams.DwFlags = 0
-	EncryptParams.DwInnerContentType = 0
 
-	// Вызов функции CryptEncryptMessage.
+	var EncryptParams = win32.CryptEncryptMessagePara{}
+	GostCrypto.MemSet(unsafe.Pointer(&EncryptParams), 0, unsafe.Sizeof(EncryptParams))
+	EncryptParams.CbSize = uint32(unsafe.Sizeof(win32.CryptEncryptMessagePara{}))
+	//EncryptParams.HCryptProv = gost.GetPtrToProviderHandle()
+	EncryptParams.DwMsgEncodingType = syscall.X509_ASN_ENCODING | syscall.PKCS_7_ASN_ENCODING
 	var cbEncryptedBlob uint32
-	//TODO: strange thing, need to refactor
-	var pRecipientCertSlice []win32.PCertContext
-	pRecipientCertSlice = append(pRecipientCertSlice, pRecipientCert)
 	var pbEncryptedBlob *byte
-	//ptrbContent, _ := GostCrypto.UTF16PtrFromString(pbContent)
-	pbContent1 := unsafe.StringData("Security is our business")
-	cbContent1 := uint32(len("Security is our business")) // Длина сообщения, включая конечный 0
-	//var EncBlob byte
+	//rgpRecipientsCerts := make([]win32.CertContext, 0, 1)
+	//rgpRecipientsCerts = append(rgpRecipientsCerts, *pRecipientCert)
+	pbContent1 := []byte("Security is our business\u0000")
+	cbContent1 := uint32(len("Security is our business\u0000")) // Длина сообщения, включая конечный 0
+	fmt.Printf("The  message is %d bytes. \n", cbContent1)
 	//TODO: fix this shit
-	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, pbContent1, cbContent1, nil, &cbEncryptedBlob); err != nil {
-		fmt.Printf("error CryptEncryptMessage function 1st usage:%s", err.Error())
+	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, &pbContent1[0], cbContent1, nil, &cbEncryptedBlob); err != nil {
+		fmt.Printf("error CryptEncryptMessage function 1st usage:%s, %d", err.Error(), err)
 		return
 	}
 	fmt.Printf("The encrypted message is %d bytes. \n", cbEncryptedBlob)
 	// Распределение памяти под возвращаемый BLOB.
 	//var pbEncryptedBlob *byte
 	// Повторный вызов функции CryptEncryptMessage для зашифрования содержимого.
-	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, pbContent1, cbContent1, pbEncryptedBlob, &cbEncryptedBlob); err != nil {
+	if err := win32.CryptEncryptMessage(&EncryptParams, 1, pRecipientCert, &pbContent1[0], cbContent1, pbEncryptedBlob, &cbEncryptedBlob); err != nil {
 		fmt.Printf("error CryptEncryptMessage function 2nd usage - Encryption Failed")
 		return
 	}
 	fmt.Printf("Encryption succeeded. \n")
 
-	// Вызов функции DecryptMessage, код которой описан после main, для расшифрования сообщения.
+	// Вызов функции DecryptMessage, для расшифрования сообщения.
 	//	DecryptMessage(pbEncryptedBlob, cbEncryptedBlob);*/
 }
 
